@@ -6,6 +6,12 @@ import detectionModule # inputs: picture, mask; outputs: keypoint x,y
 import descriptionModule # inputs: keypoint x,y; outputs: descriptors[]
 import matchingModule # inputs: descriptors[]imgA, descriptors[]imgB; outputs: match count, images with drawn matches
 
+def detect(picture, mask):
+    return keypointCoords
+
+def descript(keypointCoords)
+
+
 def main(pictures, masks, detector, descriptor, matcher): # pictures and masks w/ correlated indeces
     kpCoords[] # array for arrays of keypoint x,y
     kpDescVecs[] # array for arrays of keypoint descriptors
@@ -14,7 +20,5 @@ def main(pictures, masks, detector, descriptor, matcher): # pictures and masks w
         kpCoords[pic] = detector(pic,masks[pic])
         kpDescVecs[pic] = descriptor(kpCoords[pic])
 
-    
-    
     return
 
