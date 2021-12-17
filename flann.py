@@ -15,6 +15,7 @@ sift = cv2.SIFT_create()
 kp1, des1 = sift.detectAndCompute(img1,None)
 kp2, des2 = sift.detectAndCompute(img2,None)
 
+# everything above here is used for testing the flann implementation below
 # FLANN parameters
 FLANN_INDEX_KDTREE = 0
 index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
