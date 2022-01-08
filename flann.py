@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 from SIFT_descriptor_module import SIFT_descriptor
 
 
-img1 = cv2.imread('midi.jpg') # queryImage
+img1 = cv2.imread('midi.jpg',) # queryImage
 fn1 = 'midi.jpg'
 img2 = cv2.imread('desk.jpg') # trainImage
 fn2 = 'desk.jpg'
@@ -29,14 +29,20 @@ search_params = dict(checks=50)   # or pass empty dictionary
 flann = cv2.FlannBasedMatcher(index_params,search_params)
 
 matches = flann.knnMatch(des1,des2,k=2)
+print(len(matches))
 
 # Need to draw only good matches, so create a mask
 matchesMask = [[0,0] for i in range(len(matches))]
 
+
 # ratio test as per Lowe's paper
+counter =0
 for i,(m,n) in enumerate(matches):
     if m.distance < 0.7*n.distance:
         matchesMask[i]=[1,0]
+        counter += 1
+
+print('after ratio test', counter)
 
 draw_params = dict(matchColor = (0,255,0),
                    singlePointColor = (255,0,0),
