@@ -10,8 +10,20 @@ kp = sift.detect(gray,None)
 img = cv.drawKeypoints(gray,kp,img)
 cv.imwrite('sift_keypoints.jpg',img) """
 
+'''
 sift = cv2.SIFT.create()
 detector = SIFT_detector
 kp, gray = detector.SIFT_detect()
 kp, des = sift.compute(gray,kp)
 print('SIFT: kp=%d, descriptors=%s' % (len(kp), des.shape))
+'''
+
+class SIFT_descriptor:
+
+    def SIFT_descript(img):
+        sift = cv2.SIFT.create()
+        detector = SIFT_detector
+        kp, gray = detector.SIFT_detect(img)
+        kp, des = sift.compute(gray,kp)
+        print('SIFT: kp=%d, descriptors=%s' % (len(kp), des.shape))
+        return kp, des

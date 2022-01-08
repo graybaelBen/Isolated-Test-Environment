@@ -4,16 +4,21 @@
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
+from SIFT_descriptor_module import SIFT_descriptor
 
-img1 = cv2.imread('box.jfif',0)          # queryImage
-img2 = cv2.imread('box_in_scene.jfif',0) # trainImage
+
+img1 = cv2.imread('midi.jpg') # queryImage
+fn1 = 'midi.jpg'
+img2 = cv2.imread('desk.jpg') # trainImage
+fn2 = 'desk.jpg'
 
 # Initiate SIFT detector
 sift = cv2.SIFT_create()
 
 # find the keypoints and descriptors with SIFT
-kp1, des1 = sift.detectAndCompute(img1,None)
-kp2, des2 = sift.detectAndCompute(img2,None)
+descriptor = SIFT_descriptor
+kp1, des1 = descriptor.SIFT_descript(fn1)
+kp2, des2 = descriptor.SIFT_descript(fn2)
 
 # everything above here is used for testing the flann implementation below
 # FLANN parameters
