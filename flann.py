@@ -7,13 +7,14 @@ from matplotlib import pyplot as plt
 from SIFT_descriptor_module import SIFT_descriptor
 import os
 
-directory = 'Batch1'
+imgdir = 'Batch1'
+maskdir = 'Batch1M'
 
-def matcher(fn1, fn2):
+def FLANN_match(img1, mask1, img2, mask2):
     # find the keypoints and descriptors with SIFT
     descriptor = SIFT_descriptor
-    kp1, des1 = descriptor.SIFT_descript(fn1)
-    kp2, des2 = descriptor.SIFT_descript(fn2)
+    kp1, des1 = descriptor.SIFT_descript(img1, mask1)
+    kp2, des2 = descriptor.SIFT_descript(img2, mask2)
 
     # everything above here is used for testing the flann implementation below
     # FLANN parameters
@@ -29,7 +30,7 @@ def matcher(fn1, fn2):
     matchesMask = [[0,0] for i in range(len(matches))]
 
     # ratio test as per Lowe's paper
-    counter =0
+    counter = 0
     for i,(m,n) in enumerate(matches):
         if m.distance < 0.7*n.distance:
             matchesMask[i]=[1,0]
@@ -42,15 +43,18 @@ draw_params = dict(matchColor = (0,255,0),
                    singlePointColor = (255,0,0),
                    matchesMask = matchesMask,
                    flags = 0)
-img1 = cv2.imread('midi.jpg') # queryImage
-img2 = cv2.imread('desk.jpg') # trainImage
-img3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
+pic1 = cv2.imread('midi.jpg') # queryImage
+pic2 = cv2.imread('desk.jpg') # trainImage
+pic3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
 plt.imshow(img3,),plt.show()
 '''
-dirArray = os.listdir(directory)
-for image in dirArray:
-    fn1 = image
-    for compare in dirArray[dirArray.index(image)+1:]:
-        fn2 = compare
-        print(fn1, '\n', fn2, '\n\n')
-        #matcher(fn1,fn2)
+imgDirArr = os.listdir(imgdir)
+maskDirArr = os.listdir(maskdir)
+for image in imgDirArr:
+    img1 = image
+    mask1 = maskDirArr[imgDirArr.index(image)]
+    for compare in imgDirArr[imgDirArr.index(image)+1:]:
+        img2 = compare
+        mask2 = maskDirArr[imgDirArr.index(compare)]
+        #print(img1, '\n', img2, '\n\n')
+        #FLANN_match(img1, mask1, img2, mask2)
