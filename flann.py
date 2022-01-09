@@ -7,14 +7,7 @@ from matplotlib import pyplot as plt
 from SIFT_descriptor_module import SIFT_descriptor
 import os
 
-directory = 'imgdir'
-
-for image in os.listdir(directory):
-    fn1 = os.path.join(directory,image)
-    for compare in os.listdir(directory):
-        fn2 = os.path.join(directory, compare)
-
-print(fn1, '\n', fn2, '\n\n')
+directory = 'Batch1'
 
 def matcher(fn1, fn2):
     # find the keypoints and descriptors with SIFT
@@ -31,7 +24,6 @@ def matcher(fn1, fn2):
     flann = cv2.FlannBasedMatcher(index_params,search_params)
 
     matches = flann.knnMatch(des1,des2,k=2)
-    print(len(matches))
 
     # Need to draw only good matches, so create a mask
     matchesMask = [[0,0] for i in range(len(matches))]
@@ -43,19 +35,25 @@ def matcher(fn1, fn2):
             matchesMask[i]=[1,0]
             counter += 1
 
-    print('after ratio test', counter)
-
+    return len(matches), counter
     #draw matches on images
 '''
 draw_params = dict(matchColor = (0,255,0),
                    singlePointColor = (255,0,0),
                    matchesMask = matchesMask,
                    flags = 0)
-
-img1 = cv2.imread('midi.jpg',) # queryImage
+img1 = cv2.imread('midi.jpg') # queryImage
 img2 = cv2.imread('desk.jpg') # trainImage
-
 img3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
-
 plt.imshow(img3,),plt.show()
 '''
+
+for image in os.listdir(directory):
+    fn1 = image
+    for compare in os.listdir(directory):
+        fn2 = compare
+        print(fn1, '\n', fn2, '\n\n')
+        #matcher(fn1,fn2)
+
+# trying to sort out how to make the compare loop start at the file after the image loop 
+# so that we don't have any duplicate comparisons
