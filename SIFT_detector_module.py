@@ -11,7 +11,7 @@ class SIFT_detector:
         mask = cv2.imread(mask_filename)
         gray_mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
         sift = cv2.SIFT_create()
-        kp = sift.detect(gray_img, gray_mask)
+        kp = sift.detect(gray_img, gray_mask) #(img, mask)
         """ img = cv.drawKeypoints(gray,kp,img)
         cv.imwrite('sift_keypoints.jpg',img) """
-        return kp, gray_img
+        return kp, img

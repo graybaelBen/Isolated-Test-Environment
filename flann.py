@@ -53,7 +53,6 @@ matchCountArray = []
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
 
-
 for image in imgDirArr:
     img1 = image
     mask1 = maskDirArr[imgDirArr.index(image)]
@@ -61,7 +60,12 @@ for image in imgDirArr:
         img2 = compare
         mask2 = maskDirArr[imgDirArr.index(compare)]
         #print(img1, '\n', img2, '\n\n')
-        outs = FLANN_match(img1, mask1, img2, mask2)
-        kpCountArray.append(outs[0])
-        kpCountArray.append(outs[1])
-        matchCountArray.append(outs[2])
+        kp1count, kp2count, matchCount = FLANN_match(img1, mask1, img2, mask2)
+        kpCountArray.append(kp1count)
+        kpCountArray.append(kp2count)
+        matchCountArray.append(matchCount)
+        print(matchCount)
+
+print(len(kpCountArray))
+print(len(matchCountArray))
+print('done!')
