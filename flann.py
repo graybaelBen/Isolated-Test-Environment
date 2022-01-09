@@ -47,13 +47,10 @@ img2 = cv2.imread('desk.jpg') # trainImage
 img3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
 plt.imshow(img3,),plt.show()
 '''
-
-for image in os.listdir(directory):
+dirArray = os.listdir(directory)
+for image in dirArray:
     fn1 = image
-    for compare in os.listdir(directory):
+    for compare in dirArray[dirArray.index(image)+1:]:
         fn2 = compare
         print(fn1, '\n', fn2, '\n\n')
         #matcher(fn1,fn2)
-
-# trying to sort out how to make the compare loop start at the file after the image loop 
-# so that we don't have any duplicate comparisons
