@@ -30,13 +30,13 @@ def FLANN_match(img1, mask1, img2, mask2):
     matchesMask = [[0,0] for i in range(len(matches))]
 
     # ratio test as per Lowe's paper
-    counter = 0
+    matchCount = 0
     for i,(m,n) in enumerate(matches):
         if m.distance < 0.7*n.distance:
             matchesMask[i]=[1,0]
-            counter += 1
+            matchCount += 1
 
-    return len(matches), counter
+    return len(kp1), len(kp2), matchCount
     #draw matches on images
 '''
 draw_params = dict(matchColor = (0,255,0),
@@ -48,8 +48,12 @@ pic2 = cv2.imread('desk.jpg') # trainImage
 pic3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
 plt.imshow(img3,),plt.show()
 '''
+kpCountArray = []
+matchCountArray = []
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
+
+
 for image in imgDirArr:
     img1 = image
     mask1 = maskDirArr[imgDirArr.index(image)]
@@ -57,4 +61,7 @@ for image in imgDirArr:
         img2 = compare
         mask2 = maskDirArr[imgDirArr.index(compare)]
         #print(img1, '\n', img2, '\n\n')
-        #FLANN_match(img1, mask1, img2, mask2)
+        outs = FLANN_match(img1, mask1, img2, mask2)
+        kpCountArray.append(outs[0])
+        kpCountArray.append(outs[1])
+        matchCountArray.append(outs[2])
