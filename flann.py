@@ -6,6 +6,7 @@ import cv2
 from matplotlib import pyplot as plt
 from SIFT_descriptor_module import SIFT_descriptor
 import os
+import csv
 
 imgdir = 'Batch1'
 maskdir = 'Batch1M'
@@ -52,20 +53,32 @@ kpCountArray = []
 matchCountArray = []
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
-
+loopcount = 0
 for image in imgDirArr:
-    img1 = image
-    mask1 = maskDirArr[imgDirArr.index(image)]
+    img1 = os.path.join(imgdir, image)
+    mask1 = os.path.join(maskdir, maskDirArr[imgDirArr.index(image)])
     for compare in imgDirArr[imgDirArr.index(image)+1:]:
-        img2 = compare
-        mask2 = maskDirArr[imgDirArr.index(compare)]
+        img2 = os.path.join(imgdir, compare)
+        mask2 = os.path.join(maskdir, maskDirArr[imgDirArr.index(compare)])
+        
         #print(img1, '\n', img2, '\n\n')
+        
         kp1count, kp2count, matchCount = FLANN_match(img1, mask1, img2, mask2)
         kpCountArray.append(kp1count)
         kpCountArray.append(kp2count)
         matchCountArray.append(matchCount)
+        
         print(matchCount)
+        loopcount +=1
 
+print(loopcount)
 print(len(kpCountArray))
 print(len(matchCountArray))
+
+# print to csv
+with open('results.csv', 'w') as f:
+    writer = csv.writer(f)
+    writer.writerow(kpCountArray)
+    writer.writerow(matchCountArray)
+
 print('done!')
