@@ -20,10 +20,12 @@ print('SIFT: kp=%d, descriptors=%s' % (len(kp), des.shape))
 
 class SIFT_descriptor:
 
-    def SIFT_descript(img, mask):
+    def SIFT_descript(gray, kp):
         sift = cv2.SIFT.create()
-        detector = SIFT_detector
-        kp, gray = detector.SIFT_detect(img, mask)
+        #
         kp, des = sift.compute(gray,kp)
         print('SIFT: kp=%d, descriptors=%s' % (len(kp), des.shape))
         return kp, des
+
+#detector = SIFT_detector
+#kp, gray = detector.SIFT_detect(img, mask)
