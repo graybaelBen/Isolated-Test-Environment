@@ -7,38 +7,32 @@ from matplotlib import pyplot as plt
 from SIFT_descriptor_module import SIFT_descriptor
 import os
 import csv
+class FLANN_matcher:
+    
+    def FLANN_match(des1, des2): # previously img1, mask1, img2, mask2
+    
+        # FLANN parameters
+        FLANN_INDEX_KDTREE = 0
+        index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+        search_params = dict(checks=50)   # or pass empty dictionary
 
-imgdir = 'Batch1'
-maskdir = 'Batch1M'
+        flann = cv2.FlannBasedMatcher(index_params,search_params)
 
-def FLANN_match(img1, mask1, img2, mask2):
-    # find the keypoints and descriptors with SIFT
-    descriptor = SIFT_descriptor
-    kp1, des1 = descriptor.SIFT_descript(img1, mask1)
-    kp2, des2 = descriptor.SIFT_descript(img2, mask2)
+        matches = flann.knnMatch(des1,des2,k=2)
 
-    # everything above here is used for testing the flann implementation below
-    # FLANN parameters
-    FLANN_INDEX_KDTREE = 0
-    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-    search_params = dict(checks=50)   # or pass empty dictionary
+        # Need to draw only good matches, so create a mask
+        matchesMask = [[0,0] for i in range(len(matches))]
 
-    flann = cv2.FlannBasedMatcher(index_params,search_params)
+        # ratio test as per Lowe's paper
+        matchCount = 0
+        for i,(m,n) in enumerate(matches):
+            if m.distance < 0.7*n.distance:
+                matchesMask[i]=[1,0]
+                matchCount += 1
 
-    matches = flann.knnMatch(des1,des2,k=2)
+        return matchCount # previously included len(kp1), len(kp2),
 
-    # Need to draw only good matches, so create a mask
-    matchesMask = [[0,0] for i in range(len(matches))]
-
-    # ratio test as per Lowe's paper
-    matchCount = 0
-    for i,(m,n) in enumerate(matches):
-        if m.distance < 0.7*n.distance:
-            matchesMask[i]=[1,0]
-            matchCount += 1
-
-    return len(kp1), len(kp2), matchCount
-    #draw matches on images
+#draw matches on images
 '''
 draw_params = dict(matchColor = (0,255,0),
                    singlePointColor = (255,0,0),
@@ -48,6 +42,16 @@ pic1 = cv2.imread('midi.jpg') # queryImage
 pic2 = cv2.imread('desk.jpg') # trainImage
 pic3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
 plt.imshow(img3,),plt.show()
+'''
+
+# find the keypoints and descriptors with SIFT
+'''
+descriptor = SIFT_descriptor
+kp1, des1 = descriptor.SIFT_descript(img1, mask1)
+kp2, des2 = descriptor.SIFT_descript(img2, mask2)
+'''
+
+# old runner
 '''
 kpCountArray = []
 matchCountArray = []
@@ -74,11 +78,4 @@ for image in imgDirArr:
 print(loopcount)
 print(len(kpCountArray))
 print(len(matchCountArray))
-
-# print to csv
-with open('results.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerow(kpCountArray)
-    writer.writerow(matchCountArray)
-
-print('done!')
+'''
