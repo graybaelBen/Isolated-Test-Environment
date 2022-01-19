@@ -54,7 +54,7 @@ for image in imgDirArr:
     print('image', img1Index+1, '/', len(imgDirArr))
     for compare in imgDirArr[imgDirArr.index(image)+1:]:
         img2Index = imgDirArr.index(compare)
-        matchCount = matcher.FLANN_match(desArray[img1Index],desArray[img2Index])
+        matchCount = matcher.FLANN_match(desArray[img1Index], desArray[img2Index])
         matchCountArray.append(matchCount)
 
 # print to csv
