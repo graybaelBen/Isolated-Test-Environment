@@ -16,9 +16,9 @@ descriptor = SIFT_descriptor
 # descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 
-imgdir = 'Batch1'
-maskdir = 'Batch1M'
-graydir = 'Batch1G'
+imgdir = 'Batch2.1'
+maskdir = 'Batch2.1M'
+graydir = 'Batch2.1G'
 
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
@@ -35,7 +35,7 @@ for image in imgDirArr:
     kpArray.append(kp)
     grayArray.append(gray_img)
     kpCountArray.append(len(kp))
-    #cv2.imwrite(os.path.join(graydir, image), gray_img)
+    cv2.imwrite(os.path.join(graydir, image), gray_img)
 #debugging
 print('kpcount length :', len(kpCountArray))
 
