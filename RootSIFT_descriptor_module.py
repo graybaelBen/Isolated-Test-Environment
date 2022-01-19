@@ -9,8 +9,6 @@ class RootSIFT_descriptor:
   
     def compute(self, kp, des, eps=1e-7):
         # compute SIFT descriptors
-        #detector = SIFT_detector
-        #(kp, des) = detector.detect(image, kp)
         # if there are no keypoints or descriptors, return an empty tuple
         if len(kp) == 0:
             return ([], None)
@@ -22,9 +20,7 @@ class RootSIFT_descriptor:
         # return a tuple of the keypoints and descriptors
         return kp, des
     def descript(self, img, mask):
-        #kp, gray = SIFT_detector.SIFT_detect()
         # extract normal SIFT descriptors
-        # extractor = cv2.DescriptorExtractor_create("SIFT")
         detector = SIFT_detector
         sift = cv2.SIFT_create()
         kp, gray = detector.SIFT_detect(img, mask)
@@ -39,17 +35,9 @@ class RootSIFT_descriptor:
 
     
 
-""" # load the image we are going to extract descriptors from and convert
-# it to grayscale
-image = cv2.imread("example.png")
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-# detect Difference of Gaussian keypoints in the image
-detector = cv2.FeatureDetector_create("SIFT")
-kps = detector.detect(gray) """
 
 
-
-
+#old testing stuff
 #filename = '02__Station04__Camera1__2012-7-5__12-17-42(0).JPG'
 #maskfile = '02__Station04__Camera1__2012-7-5__12-17-42(0).BMP'
 # load the image we are going to extract descriptors from and convert
@@ -58,8 +46,5 @@ kps = detector.detect(gray) """
 #mask = cv2.imread(maskfile, 0)
 #gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 #grayM = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-
 #rs = RootSIFT_descriptor
-
-
 #kp1, des1 = rs.descript(rs, filename, maskfile)
