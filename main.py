@@ -8,10 +8,12 @@ import os
 from SIFT_detector_module import SIFT_detector # ins: img_filename, mask_filename; outs: kp, gray_img
 from SIFT_descriptor_module import SIFT_descriptor # ins: kp, gray_img; outs: kp, des
 from FLANN_matcher_module import FLANN_matcher # ins: kp, des; outs:
+#from RootSIFT_descriptor_module import RootSIFT_descriptor
 
 # assign modules
 detector = SIFT_detector
 descriptor = SIFT_descriptor
+# descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 
 imgdir = 'Batch1'
@@ -42,7 +44,7 @@ desArray = []
 for gray in grayDirArr:
     gray_img = cv2.imread(os.path.join(graydir, gray))
     kp = kpArray[grayDirArr.index(gray)]
-    kp, des = descriptor.SIFT_descript(gray_img,kp)
+    kp, des = descriptor.descript(gray_img,kp)
     desArray.append(des)
 #debugging
 print('descriptor length :', len(desArray))

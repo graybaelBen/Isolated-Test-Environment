@@ -14,7 +14,7 @@ class RootSIFT_descriptor:
             return ([], None)
         # apply the Hellinger kernel by first L1-normalizing and taking the
         # square-root
-        #des /= (des.sum(axis=1, keepdims=True) + eps)
+        des /= (des.sum(axis=1, keepdims=True) + eps)
         des = np.sqrt(des)
         #descs /= (np.linalg.norm(descs, axis=1, ord=2) + eps)
         # return a tuple of the keypoints and descriptors
