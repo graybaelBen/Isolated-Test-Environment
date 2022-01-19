@@ -31,7 +31,7 @@ grayArray = []
 for image in imgDirArr:
     img = os.path.join(imgdir, image)
     mask = os.path.join(maskdir, maskDirArr[imgDirArr.index(image)])
-    kp, gray_img = detector.SIFT_detect(img,mask)
+    kp, gray_img = detector.SIFT_detect(img, mask)
     kpArray.append(kp)
     grayArray.append(gray_img)
     kpCountArray.append(len(kp))
@@ -44,7 +44,7 @@ desArray = []
 for gray in grayDirArr:
     gray_img = cv2.imread(os.path.join(graydir, gray))
     kp = kpArray[grayDirArr.index(gray)]
-    kp, des = descriptor.descript(gray_img,kp)
+    kp, des = descriptor.descript(gray_img, kp)
     desArray.append(des)
 #debugging
 print('descriptor length :', len(desArray))
