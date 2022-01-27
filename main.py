@@ -16,9 +16,9 @@ descriptor = SIFT_descriptor
 # descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 
-imgdir = 'Batch2.1'
-maskdir = 'Batch2.1M'
-graydir = 'Batch2.1G'
+imgdir = 'Batch2.5'
+maskdir = 'Batch2.5M'
+graydir = 'Batch2.5G'
 
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
@@ -53,11 +53,14 @@ print('descriptor length :', len(desArray))
 matchCountArray = []
 for image in imgDirArr:
     img1Index = imgDirArr.index(image)
+    a = 0
     print('image', img1Index+1, '/', len(imgDirArr))
     for compare in imgDirArr[imgDirArr.index(image)+1:]:
         img2Index = imgDirArr.index(compare)
         matchCount = matcher.FLANN_match(desArray[img1Index], desArray[img2Index])
         matchCountArray.append(matchCount)
+        a += 1
+        print(a)
 
 # print to csv
 numpy.transpose(kpCountArray)
