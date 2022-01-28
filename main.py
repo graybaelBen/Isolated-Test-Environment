@@ -1,4 +1,5 @@
 # Isolated Test Environment Main
+from xml.etree.ElementInclude import include
 import cv2
 import numpy
 import csv
@@ -7,12 +8,14 @@ import os
 # import modules
 from SIFT_detector_module import SIFT_detector # ins: img_filename, mask_filename; outs: kp, gray_img
 from SIFT_descriptor_module import SIFT_descriptor # ins: kp, gray_img; outs: kp, des
+from SURF_detector_module import SURF_detector 
+from SURF_descriptor_module import SURF_descriptor
 from FLANN_matcher_module import FLANN_matcher # ins: kp, des; outs:
 #from RootSIFT_descriptor_module import RootSIFT_descriptor
 
 # assign modules
-detector = SIFT_detector
-descriptor = SIFT_descriptor
+detector = SURF_detector
+descriptor = SURF_descriptor
 # descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 
@@ -31,7 +34,7 @@ grayArray = []
 for image in imgDirArr:
     img = os.path.join(imgdir, image)
     mask = os.path.join(maskdir, maskDirArr[imgDirArr.index(image)])
-    kp, gray_img = detector.SIFT_detect(img,mask)
+    kp, gray_img = detector.detect(img,mask)
     kpArray.append(kp)
     grayArray.append(gray_img)
     kpCountArray.append(len(kp))
@@ -56,7 +59,7 @@ for image in imgDirArr:
     print('image', img1Index+1, '/', len(imgDirArr))
     for compare in imgDirArr[imgDirArr.index(image)+1:]:
         img2Index = imgDirArr.index(compare)
-        matchCount = matcher.FLANN_match(desArray[img1Index], desArray[img2Index])
+        matchCount = matcher.match(desArray[img1Index], desArray[img2Index])
         matchCountArray.append(matchCount)
 
 # print to csv

@@ -9,7 +9,7 @@ import os
 import csv
 class FLANN_matcher:
     
-    def FLANN_match(des1, des2): # previously img1, mask1, img2, mask2
+    def match(des1, des2): # previously img1, mask1, img2, mask2
     
         # FLANN parameters
         FLANN_INDEX_KDTREE = 0

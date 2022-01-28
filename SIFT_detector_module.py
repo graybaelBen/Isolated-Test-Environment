@@ -3,7 +3,7 @@ import cv2
 
 class SIFT_detector:
 
-    def SIFT_detect(img_filename, mask_filename):
+    def detect(img_filename, mask_filename):
         #filename = '02__Station32__Camera1__2012-8-31__5-17-22(1).JPG'
         #mask = '02__Station32__Camera1__2012-8-31__5-17-22(1).BMP'
         img = cv2.imread(img_filename)
