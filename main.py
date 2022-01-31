@@ -32,7 +32,7 @@ grayArray = []
 for image in imgDirArr:
     img = os.path.join(imgdir, image)
     mask = os.path.join(maskdir, maskDirArr[imgDirArr.index(image)])
-    kp, gray_img = detector.SIFT_detect(img,mask)
+    kp, gray_img = detector.detect(img,mask)
     kpArray.append(kp)
     grayArray.append(gray_img)
     kpCountArray.append(len(kp))
@@ -61,7 +61,7 @@ for image in imgDirArr:
     # internal loop starts at image in the next index
     for compare in imgDirArr[imgDirArr.index(image)+1:]:
         img2Index = imgDirArr.index(compare)
-        matchCount = matcher.FLANN_match(desArray[img1Index], desArray[img2Index])
+        matchCount = matcher.match(desArray[img1Index], desArray[img2Index])
         matchCountArray.append(matchCount)
 
 # print to csv
