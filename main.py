@@ -37,7 +37,7 @@ for image in imgDirArr:
     grayArray.append(gray_img)
     kpCountArray.append(len(kp))
 
-    # save gray images - only needed on first run of batch
+    # save gray images - only needed on the first run of a batch
     #cv2.imwrite(os.path.join(graydir, image), gray_img)
 #debugging
 print('kpcount length :', len(kpCountArray))
