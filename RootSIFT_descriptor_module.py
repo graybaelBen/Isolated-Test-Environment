@@ -19,6 +19,7 @@ class RootSIFT_descriptor:
         #descs /= (np.linalg.norm(descs, axis=1, ord=2) + eps)
         # return a tuple of the keypoints and descriptors
         return kp, des
+        
     def descript(self, img, mask):
         # extract normal SIFT descriptors
         detector = SIFT_detector

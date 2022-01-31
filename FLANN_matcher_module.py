@@ -30,7 +30,7 @@ class FLANN_matcher:
                 matchesMask[i]=[1,0]
                 matchCount += 1
 
-        return matchCount # previously included len(kp1), len(kp2),
+        return matchCount
 
 #draw matches on images
 '''
@@ -44,14 +44,14 @@ pic3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
 plt.imshow(img3,),plt.show()
 '''
 
-# find the keypoints and descriptors with SIFT
+# find the keypoints and descriptors with SIFT (manual use)
 '''
 descriptor = SIFT_descriptor
 kp1, des1 = descriptor.SIFT_descript(img1, mask1)
 kp2, des2 = descriptor.SIFT_descript(img2, mask2)
 '''
 
-# old runner
+# old runner (manual use)
 '''
 kpCountArray = []
 matchCountArray = []

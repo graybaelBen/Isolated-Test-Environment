@@ -16,6 +16,7 @@ descriptor = SIFT_descriptor
 # descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 
+#assign active directories
 imgdir = 'Batch1'
 maskdir = 'Batch1M'
 graydir = 'Batch1G'
@@ -35,6 +36,8 @@ for image in imgDirArr:
     kpArray.append(kp)
     grayArray.append(gray_img)
     kpCountArray.append(len(kp))
+
+    # save gray images - only needed on first run of batch
     #cv2.imwrite(os.path.join(graydir, image), gray_img)
 #debugging
 print('kpcount length :', len(kpCountArray))
@@ -51,9 +54,11 @@ print('descriptor length :', len(desArray))
 
 # loop through all combinations and compare images
 matchCountArray = []
+# starts at image in index 0
 for image in imgDirArr:
     img1Index = imgDirArr.index(image)
     print('image', img1Index+1, '/', len(imgDirArr))
+    # internal loop starts at image in the next index
     for compare in imgDirArr[imgDirArr.index(image)+1:]:
         img2Index = imgDirArr.index(compare)
         matchCount = matcher.FLANN_match(desArray[img1Index], desArray[img2Index])
@@ -69,39 +74,3 @@ with open('results.csv', 'w', newline = '') as f:
     for matchCount in matchCountArray:
         writer.writerow([matchCount])
 print('done!')
-
-# looping runner from flann.py
-'''
-kpCountArray = []
-matchCountArray = []
-
-loopcount = 0
-for image in imgDirArr:
-    img1 = os.path.join(imgdir, image)
-    mask1 = os.path.join(maskdir, maskDirArr[imgDirArr.index(image)])
-    for compare in imgDirArr[imgDirArr.index(image)+1:]:
-        img2 = os.path.join(imgdir, compare)
-        mask2 = os.path.join(maskdir, maskDirArr[imgDirArr.index(compare)])
-        
-        #print(img1, '\n', img2, '\n\n')
-        
-        kp1count, kp2count, matchCount = FLANN_match(img1, mask1, img2, mask2)
-        kpCountArray.append(kp1count)
-        kpCountArray.append(kp2count)
-        matchCountArray.append(matchCount)
-        
-        print(matchCount)
-        loopcount +=1
-
-print(loopcount)
-print(len(kpCountArray))
-print(len(matchCountArray))
-
-# print to csv
-with open('results.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerow(kpCountArray)
-    writer.writerow(matchCountArray)
-
-print('done!')
-'''
