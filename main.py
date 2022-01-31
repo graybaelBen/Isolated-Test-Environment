@@ -8,8 +8,8 @@ import os
 # import modules
 from SIFT_detector_module import SIFT_detector # ins: img_filename, mask_filename; outs: kp, gray_img
 from SIFT_descriptor_module import SIFT_descriptor # ins: kp, gray_img; outs: kp, des
-from SURF_detector_module import SURF_detector 
-from SURF_descriptor_module import SURF_descriptor
+from SURF_detector_module import SURF_detector #ins: img_filename, mask_filename; outs: kp, gray_img
+from SURF_descriptor_module import SURF_descriptor #ins: kp, gray_img; outs: kp, des
 from FLANN_matcher_module import FLANN_matcher # ins: kp, des; outs:
 #from RootSIFT_descriptor_module import RootSIFT_descriptor
 
