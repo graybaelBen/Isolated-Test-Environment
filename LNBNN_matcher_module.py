@@ -7,6 +7,7 @@ import csv
 class LNBNN_matcher:
     #need nearest neighbor index for all descriptors that belongs to an image Q
     #need 'class' (snow leopard) lookup? I'm thinking instead of defined classes it would be each individual image and their keypoints. This may affect runtime
+    
     def getNNIndex():
         return
     

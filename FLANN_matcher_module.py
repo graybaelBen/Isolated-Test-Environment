@@ -13,7 +13,9 @@ class FLANN_matcher:
     
         # FLANN parameters
         FLANN_INDEX_KDTREE = 0
-        index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+        FLANN_INDEX_LSH = 6
+        #index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+        index_params = dict(algorithm = FLANN_INDEX_LSH, table_number = 6, key_size = 12, multi_probe_level = 1)
         search_params = dict(checks=50)   # or pass empty dictionary
 
         flann = cv2.FlannBasedMatcher(index_params,search_params)
@@ -23,12 +25,18 @@ class FLANN_matcher:
         # Need to draw only good matches, so create a mask
         matchesMask = [[0,0] for i in range(len(matches))]
 
+        #print(matches)
+
         # ratio test as per Lowe's paper
         matchCount = 0
-        for i,(m,n) in enumerate(matches):
-            if m.distance < 0.7*n.distance:
-                matchesMask[i]=[1,0]
-                matchCount += 1
+        for i, pair in enumerate(matches):
+            try:
+                m, n = pair
+                if m.distance < 0.7*n.distance:
+                    matchesMask[i]=[1,0]
+                    matchCount += 1
+            except ValueError:
+                pass
 
         return matchCount # previously included len(kp1), len(kp2),
 

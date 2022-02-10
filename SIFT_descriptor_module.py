@@ -21,7 +21,11 @@ print('SIFT: kp=%d, descriptors=%s' % (len(kp), des.shape))
 class SIFT_descriptor:
 
     def descript(gray, kp):
-        sift = cv2.SIFT.create()
+        sift = cv2.SIFT.create(nfeatures = 0, #0
+                                nOctaveLayers = 3, #3
+                                contrastThreshold = 0.4, #0.4
+                                edgeThreshold = 10, #10
+                                sigma = 1.6)
         #
         kp, des = sift.compute(gray,kp)
         print('SIFT: kp=%d, descriptors=%s' % (len(kp), des.shape))
