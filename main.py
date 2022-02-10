@@ -17,9 +17,9 @@ descriptor = SIFT_descriptor
 matcher = FLANN_matcher
 
 #assign active directories
-imgdir = 'Batch1'
-maskdir = 'Batch1M'
-graydir = 'Batch1G'
+imgdir = 'BatchD'
+maskdir = 'BatchDM'
+graydir = 'BatchDG'
 
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
@@ -38,7 +38,7 @@ for image in imgDirArr:
     kpCountArray.append(len(kp))
 
     # save gray images - only needed on the first run of a batch
-    #cv2.imwrite(os.path.join(graydir, image), gray_img)
+    cv2.imwrite(os.path.join(graydir, image), gray_img)
 #debugging
 print('kpcount length :', len(kpCountArray))
 
@@ -61,7 +61,7 @@ for image in imgDirArr:
     # internal loop starts at image in the next index
     for compare in imgDirArr[imgDirArr.index(image)+1:]:
         img2Index = imgDirArr.index(compare)
-        matchCount = matcher.match(desArray[img1Index], desArray[img2Index])
+        matchCount = matcher.match(desArray[img1Index], desArray[img2Index], image, compare, kpArray[img1Index], kpArray[img2Index])
         matchCountArray.append(matchCount)
 
 # print to csv

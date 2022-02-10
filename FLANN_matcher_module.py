@@ -10,7 +10,7 @@ import csv
 
 class FLANN_matcher:
     
-    def match(des1, des2):
+    def match(des1, des2, image, compare, kp1, kp2):
     
         # FLANN parameters
         FLANN_INDEX_KDTREE = 0
@@ -30,6 +30,19 @@ class FLANN_matcher:
             if m.distance < 0.7*n.distance:
                 matchesMask[i]=[1,0]
                 matchCount += 1
+
+        img= 'BatchD/'+ image
+        cmp = 'BatchD/'+compare
+        #drawing code
+        draw_params = dict(matchColor = (0,255,0),
+                   singlePointColor = (255,0,0),
+                   matchesMask = matchesMask,
+                   flags = 0)
+        pic1 = cv2.imread(img) # queryImage
+        pic2 = cv2.imread(cmp) # trainImage
+        pic3 = cv2.drawMatchesKnn(pic1,kp1,pic2,kp2, matches,None,**draw_params)
+        out = "BatchDMatchOuts/"+compare
+        cv2.imwrite(out,pic3)
 
         return matchCount
 
