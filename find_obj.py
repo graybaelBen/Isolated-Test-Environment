@@ -112,7 +112,9 @@ def explore_match(win, img1, img2, kp_pairs, status = None, H = None):
         if inlier:
             cv2.line(vis, (x1, y1), (x2, y2), green)
 
+    #cv2.namedWindow(win, cv2.WINDOW_NORMAL) 
     cv2.imshow(win, vis)
+
 
     def onmouse(event, x, y, flags, param):
         cur_vis = vis

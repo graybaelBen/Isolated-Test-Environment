@@ -123,6 +123,23 @@ if __name__ == '__main__':
 
     img1 = cv2.imread(fn1, 0)
     img2 = cv2.imread(fn2, 0)
+
+    
+    img3 = cv2.imread('02__Station32__Camera1__2012-7-14__4-47-56(3).JPG',0)
+    img4 = cv2.imread('02__Station32__Camera1__2012-7-14__4-47-56(4).JPG',0)
+
+    mask3 = cv2.imread('02__Station32__Camera1__2012-7-14__4-47-56(3).BMP',0)
+    mask4 = cv2.imread('02__Station32__Camera1__2012-7-14__4-47-56(4).BMP',0)
+    # cv2.imshow("mask", mask)
+    masked3 = cv2.bitwise_and(img3, img3, mask=mask3)
+    masked4 = cv2.bitwise_and(img4, img4, mask=mask4)
+    img3 = masked3
+    img4 = masked4
+    img1 = cv2.resize(img3, (1280, 720))
+    img2 = cv2.resize(img3, (1280, 720))
+
+
+
     detector, matcher = init_feature(feature_name)
 
     if img1 is None:
