@@ -135,8 +135,8 @@ if __name__ == '__main__':
     masked4 = cv2.bitwise_and(img4, img4, mask=mask4)
     img3 = masked3
     img4 = masked4
-    img1 = cv2.resize(img3, (1280, 720))
-    img2 = cv2.resize(img3, (1280, 720))
+    img1 = cv2.resize(img3, (960, 480))
+    img2 = cv2.resize(img4, (960, 480))
 
 
 
