@@ -7,18 +7,22 @@ import os
 # import modules
 from ORB_detector_module import ORB_detector # ins: img_filename, mask_filename; outs: kp, gray_img
 from ORB_descriptor_module import ORB_descriptor # ins: kp, gray_img; outs: kp, des
+from SIFT_detector_module import SIFT_detector # ins: img_filename, mask_filename; outs: kp, gray_img
+from SIFT_descriptor_module import SIFT_descriptor
 from FLANN_matcher_module import FLANN_matcher # ins: kp, des; outs:
 #from RootSIFT_descriptor_module import RootSIFT_descriptor
 
 # assign modules
 detector = ORB_detector
 descriptor = ORB_descriptor
+#detector = SIFT_detector
+#descriptor = SIFT_descriptor
 # descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 
-imgdir = 'Batch2.5'
-maskdir = 'Batch2.5M'
-graydir = 'Batch2.5G'
+imgdir = 'BatchD'
+maskdir = 'BatchDM'
+graydir = 'BatchDG'
 
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
@@ -35,7 +39,7 @@ for image in imgDirArr:
     kpArray.append(kp)
     grayArray.append(gray_img)
     kpCountArray.append(len(kp))
-    cv2.imwrite(os.path.join(graydir, image), gray_img)
+    #cv2.imwrite(os.path.join(graydir, image), gray_img)
 
 #debugging
 #print('gray len: ', len(grayArray))
@@ -69,7 +73,7 @@ for image in imgDirArr:
         
         img2Index = imgDirArr.index(compare)
         #print(img2Index)
-        matchCount += matcher.FLANN_match(desArray[img1Index], desArray[img2Index])
+        matchCount += matcher.match(desArray[img1Index], desArray[img2Index] ,image, compare, kpArray[img1Index], kpArray[img2Index])
         matchCountArray.append(matchCount)
 
 print(matchCount)

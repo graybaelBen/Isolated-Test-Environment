@@ -7,12 +7,13 @@ from matplotlib import pyplot as plt
 from SIFT_descriptor_module import SIFT_descriptor
 import os
 import csv
+
 class FLANN_matcher:
     
-    def FLANN_match(des1, des2): # previously img1, mask1, img2, mask2
+    def match(des1, des2, image, compare, kp1, kp2):
     
         # FLANN parameters
-        FLANN_INDEX_KDTREE = 0
+        #FLANN_INDEX_KDTREE = 0
         FLANN_INDEX_LSH = 6
         #index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
         index_params = dict(algorithm = FLANN_INDEX_LSH, table_number = 6, key_size = 12, multi_probe_level = 1)
@@ -25,8 +26,6 @@ class FLANN_matcher:
         # Need to draw only good matches, so create a mask
         matchesMask = [[0,0] for i in range(len(matches))]
 
-        #print(matches)
-
         # ratio test as per Lowe's paper
         matchCount = 0
         for i, pair in enumerate(matches):
@@ -38,7 +37,20 @@ class FLANN_matcher:
             except ValueError:
                 pass
 
-        return matchCount # previously included len(kp1), len(kp2),
+        img= 'BatchD/'+ image
+        cmp = 'BatchD/'+compare
+        #drawing code
+        draw_params = dict(matchColor = (0,255,0),
+                   singlePointColor = (255,0,0),
+                   matchesMask = matchesMask,
+                   flags = 0)
+        pic1 = cv2.imread(img) # queryImage
+        pic2 = cv2.imread(cmp) # trainImage
+        pic3 = cv2.drawMatchesKnn(pic1,kp1,pic2,kp2, matches,None,**draw_params)
+        out = "BatchDR/"+compare
+        cv2.imwrite(out,pic3)
+
+        return matchCount
 
 #draw matches on images
 '''
@@ -52,14 +64,14 @@ pic3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,**draw_params)
 plt.imshow(img3,),plt.show()
 '''
 
-# find the keypoints and descriptors with SIFT
+# find the keypoints and descriptors with SIFT (manual use)
 '''
 descriptor = SIFT_descriptor
 kp1, des1 = descriptor.SIFT_descript(img1, mask1)
 kp2, des2 = descriptor.SIFT_descript(img2, mask2)
 '''
 
-# old runner
+# old runner (manual use)
 '''
 kpCountArray = []
 matchCountArray = []

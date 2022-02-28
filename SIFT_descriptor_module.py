@@ -28,7 +28,7 @@ class SIFT_descriptor:
                                 sigma = 1.6)
         #
         kp, des = sift.compute(gray,kp)
-        print('SIFT: kp=%d, descriptors=%s' % (len(kp), des.shape))
+        #print('SIFT: kp=%d, descriptors=%s' % (len(kp)))#, des.shape))
         return kp, des
 
 #detector = SIFT_detector
