@@ -21,10 +21,10 @@ matcher = FLANN_matcher
 imgdir = 'Batches\Batch1\images'
 maskdir = 'Batches\Batch1\masks'
 graydir = 'Batches\Batch1\gray'
-
+processedDir = 'Batches\Batch1\processed'
 #process images
-processor.threshold(imgdir, maskdir)
-imgdir = 'Batches\Batch1\processed'
+processor.threshold(imgdir, maskdir, processedDir)
+imgdir = processedDir
 
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)

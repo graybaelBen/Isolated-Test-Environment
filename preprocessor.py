@@ -4,8 +4,7 @@ from matplotlib import pyplot as plt
 import os
 
 class processor:
-    def threshold(imgdir, maskdir):
-        saveDir = "Batches\Batch1\processed"
+    def threshold(imgdir, maskdir, savedir):
         imgDirArr = os.listdir(imgdir)
         maskDirArr = os.listdir(maskdir)
 
@@ -20,5 +19,21 @@ class processor:
             thresh = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C,\
                         cv2.THRESH_BINARY,11,2)
 
-            cv2.imwrite(os.path.join(saveDir, image), thresh )
-            return saveDir
+            cv2.imwrite(os.path.join(savedir, image), thresh )
+
+    def mask(imgdir, maskdir, savedir):
+
+        imgDirArr = os.listdir(imgdir)
+        maskDirArr = os.listdir(maskdir)
+        saveDirArr = os.listdir(savedir)
+
+        for image in imgDirArr:
+            img = cv2.imread(os.path.join(imgdir, image),0)
+            mask = cv2.imread(os.path.join(maskdir, maskDirArr[imgDirArr.index(image)]),0)
+            #cv2.imshow("pic", img)
+            #cv2.imshow("mask", mask)
+
+            combo = cv2.bitwise_and(img, img, mask=mask)
+            img = combo
+            #cv2.imshow("mask on img", masked)
+            cv2.imwrite(os.path.join(savedir, image), combo)
