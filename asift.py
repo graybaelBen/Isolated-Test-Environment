@@ -21,9 +21,11 @@ USAGE
 
 # Python 2/3 compatibility
 from __future__ import print_function
+from cv2 import BORDER_REPLICATE, BORDER_WRAP
 
 import numpy as np
 import cv2
+import os
 
 # built-in modules
 import itertools as it
@@ -53,7 +55,7 @@ def affine_skew(tilt, phi, img, mask=None):
         tcorners = np.int32( np.dot(corners, A.T) )
         x, y, w, h = cv2.boundingRect(tcorners.reshape(1,-1,2))
         A = np.hstack([A, [[-x], [-y]]])
-        img = cv2.warpAffine(img, A, (w, h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+        img = cv2.warpAffine(img, A, (w, h), flags=cv2.INTER_LINEAR, borderMode=0)
     if tilt != 1.0:
         s = 0.8*np.sqrt(tilt*tilt-1)
         img = cv2.GaussianBlur(img, (0, 0), sigmaX=s, sigmaY=0.01)
@@ -112,56 +114,55 @@ if __name__ == '__main__':
     import sys, getopt
     opts, args = getopt.getopt(sys.argv[1:], '', ['feature='])
     opts = dict(opts)
-    feature_name = opts.get('--feature', 'brisk-flann')
-    try:
-        fn1, fn2 = args
-    except:
-        fn1 = 'aibek1.jpg'
-        fn2 = 'aibek2.jpg'
-        #fn1 = 'adam1.jpg'
-        #fn2 = 'adam2.jpg'
+    feature_name = opts.get('--feature', 'sift-flann')
+    print(feature_name)
 
-    img1 = cv2.imread(fn1, 0)
-    img2 = cv2.imread(fn2, 0)
+    imgdir = 'BatchD'
+    maskdir = 'BatchDM'
+    patchedir = 'BatchD-F'
+    # graydir = 'BatchDG'
 
+    imgDirArr = os.listdir(imgdir)
+    maskDirArr = os.listdir(maskdir)
+    patchDirArr = os.listdir(patchedir)
+    # grayDirArr = os.listdir(graydir)
     
-    img3 = cv2.imread('02__Station32__Camera1__2012-7-14__4-47-56(3).JPG',0)
-    img4 = cv2.imread('02__Station32__Camera1__2012-7-14__4-47-56(4).JPG',0)
-
-    mask3 = cv2.imread('02__Station32__Camera1__2012-7-14__4-47-56(3).BMP',0)
-    mask4 = cv2.imread('02__Station32__Camera1__2012-7-14__4-47-56(4).BMP',0)
-    # cv2.imshow("mask", mask)
-    masked3 = cv2.bitwise_and(img3, img3, mask=mask3)
-    masked4 = cv2.bitwise_and(img4, img4, mask=mask4)
-    img3 = masked3
-    img4 = masked4
-    img1 = cv2.resize(img3, (960, 480))
-    img2 = cv2.resize(img4, (960, 480))
-
-
-
+    kpArray = []
+    kpCountArray = []
+    grayArray = []
+    for image in imgDirArr:
+        test = os.path.join(imgdir, image)
+        #print(test)
+        img = cv2.imread(os.path.join(imgdir, image), 0)
+        #print(img)
+        mask2 = cv2.imread(os.path.join(maskdir, maskDirArr[imgDirArr.index(image)]), 0)
+        #print(mask2)
+        masked = cv2.bitwise_and(img, img, mask=mask2)
+        img2 = masked
+        print(type(img))
+        img = cv2.resize(img2, (960, 480))
+        out = "BatchD-F/" + image
+        cv2.imwrite(out,img)
+        
     detector, matcher = init_feature(feature_name)
 
-    if img1 is None:
-        print('Failed to load fn1:', fn1)
-        sys.exit(1)
+    # if img1 is None:
+    #     print('Failed to load fn1:', fn1)
+    #     sys.exit(1)
 
-    if img2 is None:
-        print('Failed to load fn2:', fn2)
-        sys.exit(1)
+    # if img2 is None:
+    #     print('Failed to load fn2:', fn2)
+    #     sys.exit(1)
 
-    if detector is None:
-        print('unknown feature:', feature_name)
-        sys.exit(1)
+    # if detector is None:
+    #     print('unknown feature:', feature_name)
+    #     sys.exit(1)
 
     print('using', feature_name)
 
     pool=ThreadPool(processes = cv2.getNumberOfCPUs())
-    kp1, desc1 = affine_detect(detector, img1, pool=pool)
-    kp2, desc2 = affine_detect(detector, img2, pool=pool)
-    print('img1 - %d features, img2 - %d features' % (len(kp1), len(kp2)))
 
-    def match_and_draw(win):
+    def match_and_draw(win, img1, img2, kp1, kp2, desc1, desc2):
         with Timer('matching'):
             raw_matches = matcher.knnMatch(desc1, trainDescriptors = desc2, k = 2) #2
         p1, p2, kp_pairs = filter_matches(kp1, kp2, raw_matches)
@@ -176,7 +177,45 @@ if __name__ == '__main__':
 
         vis = explore_match(win, img1, img2, kp_pairs, None, H)
 
+    for patched in patchDirArr:
+        # patch1Index = patchDirArr.index(patched)
+        # mask1 = cv2.imread(os.path.join(maskdir, maskDirArr[imgDirArr.index(patched)]), 0)
+        img1 = cv2.imread(os.path.join(patchedir, patched), 0)
+        # img1 = cv2.imread(os.path.join(imgdir, patched), 0)
+        kp1, desc1 = affine_detect(detector, img1, pool = pool)
+        for compare in patchDirArr[patchDirArr.index(patched)+1:]:
+            # patch2Index = patchDirArr.index(compare)
+            # mask2 = cv2.imread(os.path.join(maskdir, maskDirArr[imgDirArr.index(compare)]), 0)
+            img2 = cv2.imread(os.path.join(patchedir, compare), 0)
+            # img2 = cv2.imread(os.path.join(imgdir, compare), 0)
+            kp2, desc2 = affine_detect(detector, img2, pool = pool)
+            print('img1 - %d features, img2 - %d features' % (len(kp1), len(kp2)))
+            match_and_draw('affine find_obj', img1, img2, kp1, kp2, desc1, desc2)
+            cv2.waitKey()
+            cv2.destroyAllWindows()
 
-    match_and_draw('affine find_obj')
-    cv2.waitKey()
-    cv2.destroyAllWindows()
+    
+            
+    # kp1, desc1 = affine_detect(detector, img1, pool=pool)
+    # kp2, desc2 = affine_detect(detector, img2, pool=pool)
+    # print('img1 - %d features, img2 - %d features' % (len(kp1), len(kp2)))
+
+    # def match_and_draw(win):
+    #     with Timer('matching'):
+    #         raw_matches = matcher.knnMatch(desc1, trainDescriptors = desc2, k = 2) #2
+    #     p1, p2, kp_pairs = filter_matches(kp1, kp2, raw_matches)
+    #     if len(p1) >= 4:
+    #         H, status = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
+    #         print('%d / %d  inliers/matched' % (np.sum(status), len(status)))
+    #         # do not draw outliers (there will be a lot of them)
+    #         kp_pairs = [kpp for kpp, flag in zip(kp_pairs, status) if flag]
+    #     else:
+    #         H, status = None, None
+    #         print('%d matches found, not enough for homography estimation' % len(p1))
+
+    #     vis = explore_match(win, img1, img2, kp_pairs, None, H)
+
+
+    # match_and_draw('affine find_obj')
+    # cv2.waitKey()
+    # cv2.destroyAllWindows()

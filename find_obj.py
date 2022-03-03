@@ -28,10 +28,10 @@ FLANN_INDEX_LSH    = 6
 def init_feature(name):
     chunks = name.split('-')
     if chunks[0] == 'sift':
-        detector = cv2.xfeatures2d.SIFT_create()
+        detector = cv2.SIFT_create()
         norm = cv2.NORM_L2
     elif chunks[0] == 'surf':
-        detector = cv2.xfeatures2d.SURF_create(800)
+        detector = cv2.SURF_create(800)
         norm = cv2.NORM_L2
     elif chunks[0] == 'orb':
         detector = cv2.ORB_create(400)
@@ -73,9 +73,13 @@ def filter_matches(kp1, kp2, matches, ratio = 0.75):
 def explore_match(win, img1, img2, kp_pairs, status = None, H = None):
     h1, w1 = img1.shape[:2]
     h2, w2 = img2.shape[:2]
-    vis = np.zeros((max(h1, h2), w1+w2), np.uint8)
+    # print(str(h1) + " " + str(w1) + " " + str(h2) + " " + str(w2))
+    # vis = np.zeros((max(h1, h2), w1+w2), np.uint8)
+    # vis[:h1, :w1] = img1
+    # vis[:h2, w1:w1+w2] = img2
+    vis = np.zeros((h1+h2, max(w1, w2)), np.uint8)
     vis[:h1, :w1] = img1
-    vis[:h2, w1:w1+w2] = img2
+    vis[h1:h1+h2, :w1] = img2
     vis = cv2.cvtColor(vis, cv2.COLOR_GRAY2BGR)
 
     if H is not None:
@@ -88,15 +92,16 @@ def explore_match(win, img1, img2, kp_pairs, status = None, H = None):
     p1, p2 = [], []  # python 2 / python 3 change of zip unpacking
     for kpp in kp_pairs:
         p1.append(np.int32(kpp[0].pt))
-        p2.append(np.int32(np.array(kpp[1].pt) + [w1, 0]))
+        p2.append(np.int32(np.array(kpp[1].pt) + [0, h1]))
 
     green = (0, 255, 0)
     red = (0, 0, 255)
+    blue = (255, 0, 255)
     white = (255, 255, 255)
     kp_color = (51, 103, 236)
     for (x1, y1), (x2, y2), inlier in zip(p1, p2, status):
         if inlier:
-            col = green
+            col = blue
             cv2.circle(vis, (x1, y1), 2, col, -1)
             cv2.circle(vis, (x2, y2), 2, col, -1)
         else:
@@ -132,7 +137,7 @@ def explore_match(win, img1, img2, kp_pairs, status = None, H = None):
                  kp1s.append(kp1)
                  kp2s.append(kp2)
             cur_vis = cv2.drawKeypoints(cur_vis, kp1s, None, flags=4, color=kp_color)
-            cur_vis[:,w1:] = cv2.drawKeypoints(cur_vis[:,w1:], kp2s, None, flags=4, color=kp_color)
+            cur_vis[h1:,:] = cv2.drawKeypoints(cur_vis[h1:,:], kp2s, None, flags=4, color=kp_color)
 
         cv2.imshow(win, cur_vis)
     cv2.setMouseCallback(win, onmouse)
