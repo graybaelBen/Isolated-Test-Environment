@@ -37,9 +37,11 @@ class FLANN_matcher:
             except ValueError:
                 pass
 
+        
+        
+        #drawing code
         img= 'BatchD/'+ image
         cmp = 'BatchD/'+compare
-        #drawing code
         draw_params = dict(matchColor = (0,255,0),
                    singlePointColor = (255,0,0),
                    matchesMask = matchesMask,
