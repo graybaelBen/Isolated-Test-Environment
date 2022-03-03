@@ -8,6 +8,7 @@ import os
 from SIFT_detector_module import SIFT_detector # ins: img_filename, mask_filename; outs: kp, gray_img
 from SIFT_descriptor_module import SIFT_descriptor # ins: kp, gray_img; outs: kp, des
 from FLANN_matcher_module import FLANN_matcher # ins: kp, des; outs:
+from preprocessor  import processor
 #from RootSIFT_descriptor_module import RootSIFT_descriptor
 
 # assign modules
@@ -17,9 +18,13 @@ descriptor = SIFT_descriptor
 matcher = FLANN_matcher
 
 #assign active directories
-imgdir = 'Batch1'
-maskdir = 'Batch1M'
-graydir = 'Batch1G'
+imgdir = 'Batches\Batch1\images'
+maskdir = 'Batches\Batch1\masks'
+graydir = 'Batches\Batch1\gray'
+
+#process images
+processor.threshold(imgdir, maskdir)
+imgdir = 'Batches\Batch1\processed'
 
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
