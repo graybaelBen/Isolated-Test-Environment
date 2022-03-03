@@ -4,9 +4,9 @@ import argparse
 import os
 
 #assign active directories
-imgdir = 'Batch1'
-maskdir = 'Batch1M'
-combodir = 'Batch1C'
+imgdir = 'Batch2'
+maskdir = 'Batch2M'
+combodir = 'Batch2C'
 
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
