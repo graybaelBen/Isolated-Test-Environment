@@ -43,7 +43,7 @@ for image in imgDirArr:
     kpCountArray.append(len(kp))
 
     # save gray images - only needed on the first run of a batch
-    #cv2.imwrite(os.path.join(graydir, image), gray_img)
+    cv2.imwrite(os.path.join(graydir, image), gray_img)
 #debugging
 print('kpcount length :', len(kpCountArray))
 
@@ -67,7 +67,7 @@ for image in imgDirArr:
     # internal loop starts at image in the next index
     for compare in imgDirArr[imgDirArr.index(image)+1:]:
         img2Index = imgDirArr.index(compare)
-        matchCount = matcher.match(desArray[img1Index], desArray[img2Index])
+        matchCount = matcher.match(desArray[img1Index], desArray[img2Index], image, compare, kpArray[img1Index], kpArray[img2Index])
         matchCountArray.append(matchCount)
         a += 1
         print(a)
