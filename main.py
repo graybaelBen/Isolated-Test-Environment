@@ -52,7 +52,7 @@ desArray = []
 for gray in grayDirArr:
     gray_img = cv2.imread(os.path.join(graydir, gray))
     kp = kpArray[grayDirArr.index(gray)]
-    kp, des = descriptor.descript(gray_img,kp)
+    kp, des = descriptor.descript(gray_img, kp)
     desArray.append(des)
 #debugging
 print('descriptor length :', len(desArray))
@@ -62,12 +62,15 @@ matchCountArray = []
 # starts at image in index 0
 for image in imgDirArr:
     img1Index = imgDirArr.index(image)
+    a = 0
     print('image', img1Index+1, '/', len(imgDirArr))
     # internal loop starts at image in the next index
     for compare in imgDirArr[imgDirArr.index(image)+1:]:
         img2Index = imgDirArr.index(compare)
         matchCount = matcher.match(desArray[img1Index], desArray[img2Index])
         matchCountArray.append(matchCount)
+        a += 1
+        print(a)
 
 # print to csv
 numpy.transpose(kpCountArray)
