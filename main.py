@@ -54,6 +54,11 @@ for gray in grayDirArr:
     kp = kpArray[grayDirArr.index(gray)]
     kp, des = descriptor.descript(gray_img,kp)
     desArray.append(des)
+    #RootSIFT
+    des /= (des.sum(axis=1, keepdims=True) + 1e-7)
+    des = numpy.sqrt(des)
+    #RootSIFT end
+
 #debugging
 print('descriptor length :', len(desArray))
 
