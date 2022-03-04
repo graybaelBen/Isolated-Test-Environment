@@ -41,21 +41,6 @@ class FLANN_matcher:
             except ValueError:
                 pass
 
-        
-        
-        #drawing code
-        img= 'BatchD/'+ image
-        cmp = 'BatchD/'+compare
-        draw_params = dict(matchColor = (0,255,0),
-                   singlePointColor = (255,0,0),
-                   matchesMask = matchesMask,
-                   flags = 0)
-        pic1 = cv2.imread(img) # queryImage
-        pic2 = cv2.imread(cmp) # trainImage
-        pic3 = cv2.drawMatchesKnn(pic1,kp1,pic2,kp2, matches,None,**draw_params)
-        out = "BatchDR/"+compare
-        cv2.imwrite(out,pic3)
-
 
         #drawing code
         draw_params = dict(matchColor = (0,255,0),
@@ -71,6 +56,23 @@ class FLANN_matcher:
 
 #draw matches on images
 '''
+BACKUP ARCHIVE
+
+#drawing code
+img= 'BatchD/'+ image
+cmp = 'BatchD/'+compare
+draw_params = dict(matchColor = (0,255,0),
+        singlePointColor = (255,0,0),
+        matchesMask = matchesMask,
+        flags = 0)
+pic1 = cv2.imread(img) # queryImage
+pic2 = cv2.imread(cmp) # trainImage
+pic3 = cv2.drawMatchesKnn(pic1,kp1,pic2,kp2, matches,None,**draw_params)
+out = "BatchDR/"+compare
+cv2.imwrite(out,pic3)
+
+
+
 draw_params = dict(matchColor = (0,255,0),
                    singlePointColor = (255,0,0),
                    matchesMask = matchesMask,
