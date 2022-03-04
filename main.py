@@ -14,8 +14,8 @@ from preprocessor  import processor
 #from RootSIFT_descriptor_module import RootSIFT_descriptor
 
 # assign modules
-detector = ORB_detector
-descriptor = ORB_descriptor
+detector = SIFT_detector
+descriptor = SIFT_descriptor
 #detector = SIFT_detector
 #descriptor = SIFT_descriptor
 # descriptor = RootSIFT_descriptor
