@@ -7,12 +7,14 @@ class processor:
     def threshold(imgdir, maskdir, savedir):
         imgDirArr = os.listdir(imgdir)
         maskDirArr = os.listdir(maskdir)
+        print(len(imgDirArr))
+        print(len(maskDirArr))
 
-        for idx, image in enumerate(imgDirArr):
-            print(os.path.join(maskdir, maskDirArr[idx]))
+        for image in imgDirArr:
+            print(os.path.join(maskdir, maskDirArr[imgDirArr.index(image)]))
             print(os.path.join(imgdir, image))
             img = cv2.imread(os.path.join(imgdir, image), 0)
-            mask = cv2.imread(os.path.join(maskdir, maskDirArr[idx]), 0)
+            mask = cv2.imread(os.path.join(maskdir, maskDirArr[imgDirArr.index(image)]), 0)
             img = cv2.bitwise_and(img, img, mask=mask) 
             img = cv2.medianBlur(img,5)
 

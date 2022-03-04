@@ -13,8 +13,8 @@ class FLANN_matcher:
     # pass in relative file path of current directory such as Batch1/B1.1
     def match(des1, des2, image, compare, kp1, kp2, current_dir):
 
-        image1 = cv2.imread(current_dir+image)
-        image2 = cv2.imread(current_dir+compare)
+        image1 = cv2.imread(os.path.join(current_dir,image))
+        image2 = cv2.imread(os.path.join(current_dir,compare))
     
         # FLANN parameters
         #FLANN_INDEX_KDTREE = 0
@@ -49,7 +49,7 @@ class FLANN_matcher:
                            flags=cv2.DrawMatchesFlags_DEFAULT)
 
         matchesDrawn = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
-        results = os.path.join(current_dir,"/results",compare)
+        results = os.path.join(current_dir,"results",compare)
         cv2.imwrite(results,matchesDrawn)
 
         return matchCount

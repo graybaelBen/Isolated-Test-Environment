@@ -22,19 +22,24 @@ descriptor = ORB_descriptor
 matcher = FLANN_matcher
 
 #assign active directories
-current_dir = 'Batch1/B1.1'
+current_dir = os.path.join('Batch2','B2.1')
+
 imgdir = os.path.join(current_dir,'images')
 maskdir = os.path.join(current_dir,'masks')
 graydir = os.path.join(current_dir,'gray')
 processeddir = os.path.join(current_dir,'processed')
 
-#process images
-processor.threshold(imgdir, maskdir, processeddir)
-imgdir = processeddir
-
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
 grayDirArr = os.listdir(graydir)
+
+#process images 
+# COMMENT OUT IF NO PROCESSING NEEDED
+processor.threshold(imgdir, maskdir, processeddir)
+# COMMENT OUT IF NO PROCESSING NEEDED
+imgDirArr = os.listdir(processeddir)
+
+
 
 # loop through image directory, generate keypoints and grayscale images
 kpArray = []
