@@ -43,10 +43,10 @@ class FLANN_matcher:
 
 
         #drawing code
-        draw_params = dict(matchColor = (0,255,0),
-                   singlePointColor = (255,0,0),
-                   matchesMask = matchesMask,
-                   flags = 0)
+        draw_params = dict(matchColor=(0, 255, 0),
+                           singlePointColor=(255, 0, 0),
+                           matchesMask=matchesMask,
+                           flags=cv2.DrawMatchesFlags_DEFAULT)
 
         matchesDrawn = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
         results = os.path.join(current_dir,"/results",compare)
