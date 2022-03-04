@@ -18,13 +18,15 @@ descriptor = SIFT_descriptor
 matcher = FLANN_matcher
 
 #assign active directories
-imgdir = 'Batches\Batch1\images'
-maskdir = 'Batches\Batch1\masks'
-graydir = 'Batches\Batch1\gray'
-processedDir = 'Batches\Batch1\processed'
+current_dir = 'Batch1/B1.1'
+imgdir = os.path.join(current_dir,'images')
+maskdir = os.path.join(current_dir,'masks')
+graydir = os.path.join(current_dir,'gray')
+processeddir = os.path.join(current_dir,'processed')
+
 #process images
-processor.threshold(imgdir, maskdir, processedDir)
-imgdir = processedDir
+processor.threshold(imgdir, maskdir, processeddir)
+imgdir = processeddir
 
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
@@ -67,7 +69,7 @@ for image in imgDirArr:
     # internal loop starts at image in the next index
     for compare in imgDirArr[imgDirArr.index(image)+1:]:
         img2Index = imgDirArr.index(compare)
-        matchCount = matcher.match(desArray[img1Index], desArray[img2Index], image, compare, kpArray[img1Index], kpArray[img2Index])
+        matchCount = matcher.match(desArray[img1Index], desArray[img2Index], image, compare, kpArray[img1Index], kpArray[img2Index],current_dir)
         matchCountArray.append(matchCount)
         a += 1
         print(a)

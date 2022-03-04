@@ -10,7 +10,11 @@ import csv
 
 class FLANN_matcher:
     
-    def match(des1, des2, image, compare, kp1, kp2):
+    # pass in relative file path of current directory such as Batch1/B1.1
+    def match(des1, des2, image, compare, kp1, kp2, current_dir):
+
+        image1 = cv2.imread(current_dir+image)
+        image2 = cv2.imread(current_dir+compare)
     
         # FLANN parameters
         FLANN_INDEX_KDTREE = 0
@@ -31,18 +35,16 @@ class FLANN_matcher:
                 matchesMask[i]=[1,0]
                 matchCount += 1
 
-        img= 'BatchD/'+ image
-        cmp = 'BatchD/'+compare
+
         #drawing code
         draw_params = dict(matchColor = (0,255,0),
                    singlePointColor = (255,0,0),
                    matchesMask = matchesMask,
                    flags = 0)
-        pic1 = cv2.imread(img) # queryImage
-        pic2 = cv2.imread(cmp) # trainImage
-        pic3 = cv2.drawMatchesKnn(pic1,kp1,pic2,kp2, matches,None,**draw_params)
-        out = "BatchDMatchOuts/"+compare
-        cv2.imwrite(out,pic3)
+
+        matchesDrawn = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
+        results = os.path.join(current_dir,"/results",compare)
+        cv2.imwrite(results,matchesDrawn)
 
         return matchCount
 
