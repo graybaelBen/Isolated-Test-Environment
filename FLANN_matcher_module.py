@@ -17,8 +17,10 @@ class FLANN_matcher:
         image2 = cv2.imread(current_dir+compare)
     
         # FLANN parameters
-        FLANN_INDEX_KDTREE = 0
-        index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+        #FLANN_INDEX_KDTREE = 0
+        FLANN_INDEX_LSH = 6
+        #index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+        index_params = dict(algorithm = FLANN_INDEX_LSH, table_number = 6, key_size = 12, multi_probe_level = 1)
         search_params = dict(checks=50)   # or pass empty dictionary
 
         flann = cv2.FlannBasedMatcher(index_params,search_params)
@@ -30,10 +32,29 @@ class FLANN_matcher:
 
         # ratio test as per Lowe's paper
         matchCount = 0
-        for i,(m,n) in enumerate(matches):
-            if m.distance < 0.7*n.distance:
-                matchesMask[i]=[1,0]
-                matchCount += 1
+        for i, pair in enumerate(matches):
+            try:
+                m, n = pair
+                if m.distance < 0.7*n.distance:
+                    matchesMask[i]=[1,0]
+                    matchCount += 1
+            except ValueError:
+                pass
+
+        
+        
+        #drawing code
+        img= 'BatchD/'+ image
+        cmp = 'BatchD/'+compare
+        draw_params = dict(matchColor = (0,255,0),
+                   singlePointColor = (255,0,0),
+                   matchesMask = matchesMask,
+                   flags = 0)
+        pic1 = cv2.imread(img) # queryImage
+        pic2 = cv2.imread(cmp) # trainImage
+        pic3 = cv2.drawMatchesKnn(pic1,kp1,pic2,kp2, matches,None,**draw_params)
+        out = "BatchDR/"+compare
+        cv2.imwrite(out,pic3)
 
 
         #drawing code
