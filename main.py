@@ -53,11 +53,11 @@ for gray in grayDirArr:
     gray_img = cv2.imread(os.path.join(graydir, gray))
     kp = kpArray[grayDirArr.index(gray)]
     kp, des = descriptor.descript(gray_img,kp)
-    desArray.append(des)
     #RootSIFT
-    des /= (des.sum(axis=1, keepdims=True) + 1e-7)
-    des = numpy.sqrt(des)
+    #des /= (des.sum(axis=1, keepdims=True) + 1e-7)
+    #des = numpy.sqrt(des)
     #RootSIFT end
+    desArray.append(des)
 
 #debugging
 print('descriptor length :', len(desArray))
