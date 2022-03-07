@@ -10,11 +10,23 @@ import csv
 
 class FLANN_matcher:
     
-    def match(des1, des2):
+    # pass in relative file path of current directory such as Batch1/B1.1
+    def match(des1, des2, image, compare, kp1, kp2, current_dir):
+
+        image1 = cv2.imread(os.path.join(current_dir,"processed",image))
+        image2 = cv2.imread(os.path.join(current_dir,"processed",compare))
+        print("image1,", os.path.join(current_dir,"processed",image))
     
         # FLANN parameters
+     
+       # ORB
+       # FLANN_INDEX_LSH = 6
+       # index_params = dict(algorithm = FLANN_INDEX_LSH, table_number = 6, key_size = 12, multi_probe_level = 1)
+
+        # SIFT
         FLANN_INDEX_KDTREE = 0
         index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+
         search_params = dict(checks=50)   # or pass empty dictionary
 
         flann = cv2.FlannBasedMatcher(index_params,search_params)
@@ -26,15 +38,49 @@ class FLANN_matcher:
 
         # ratio test as per Lowe's paper
         matchCount = 0
-        for i,(m,n) in enumerate(matches):
-            if m.distance < 0.7*n.distance:
-                matchesMask[i]=[1,0]
-                matchCount += 1
+        for i, pair in enumerate(matches):
+            try:
+                m, n = pair
+                if m.distance < 0.7*n.distance:
+                    matchesMask[i]=[1,0]
+                    matchCount += 1
+            except ValueError:
+                pass
+
+
+        #drawing code
+        draw_params = dict(matchColor=(0, 255, 0),
+                           singlePointColor=(255, 0, 0),
+                           matchesMask=matchesMask,
+                           flags=cv2.DrawMatchesFlags_DEFAULT)
+        print("i should be printing")  
+        matchesDrawn = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
+        compared_images = image,"+",compare
+        results = os.path.join(current_dir,"results",image+compare)
+        print(results)
+        cv2.imwrite(results,matchesDrawn)
 
         return matchCount
 
-#draw matches on images
+#draw matches on images``
 '''
+BACKUP ARCHIVE
+
+#drawing code
+img= 'BatchD/'+ image
+cmp = 'BatchD/'+compare
+draw_params = dict(matchColor = (0,255,0),
+        singlePointColor = (255,0,0),
+        matchesMask = matchesMask,
+        flags = 0)
+pic1 = cv2.imread(img) # queryImage
+pic2 = cv2.imread(cmp) # trainImage
+pic3 = cv2.drawMatchesKnn(pic1,kp1,pic2,kp2, matches,None,**draw_params)
+out = "BatchDR/"+compare
+cv2.imwrite(out,pic3)
+
+
+
 draw_params = dict(matchColor = (0,255,0),
                    singlePointColor = (255,0,0),
                    matchesMask = matchesMask,
