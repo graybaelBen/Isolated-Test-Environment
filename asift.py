@@ -135,7 +135,8 @@ if __name__ == '__main__':
         img2 = masked
         print(type(img))
         img = cv2.resize(img2, (960, 480))
-        out = "BatchD-F/" + image
+        out = patchedir + image
+        # ^^ out might be broken like this, try Batch1/Batch1.1/patched or whatever batch it is
         cv2.imwrite(out,img)
     """    
     detector, matcher = init_feature(feature_name)
