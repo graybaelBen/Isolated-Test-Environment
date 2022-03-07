@@ -16,13 +16,11 @@ from preprocessor  import processor
 # assign modules
 detector = SIFT_detector
 descriptor = SIFT_descriptor
-#detector = SIFT_detector
-#descriptor = SIFT_descriptor
 # descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 
 #assign active directories
-current_dir = os.path.join('Batch2','B2.1')
+current_dir = os.path.join('Batch2','B2.5')
 
 imgdir = os.path.join(current_dir,'images')
 maskdir = os.path.join(current_dir,'masks')
@@ -34,9 +32,8 @@ maskDirArr = os.listdir(maskdir)
 grayDirArr = os.listdir(graydir)
 
 #process images 
-# COMMENT OUT IF NO PROCESSING NEEDED
+##COMMENT OUT IF NO PROCESSING NEEDED##
 processor.threshold(imgdir, maskdir, processeddir)
-# COMMENT OUT IF NO PROCESSING NEEDED
 imgDirArr = os.listdir(processeddir)
 imgdir = processeddir
 
