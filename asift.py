@@ -26,7 +26,7 @@ from cv2 import BORDER_REPLICATE, BORDER_WRAP
 import numpy as np
 import cv2
 import os
-
+import csv
 # built-in modules
 import itertools as it
 from multiprocessing.pool import ThreadPool
@@ -127,9 +127,7 @@ if __name__ == '__main__':
     patchDirArr = os.listdir(patchedir)
     # grayDirArr = os.listdir(graydir)
     
-    kpArray = []
-    kpCountArray = []
-    grayArray = []
+    """
     for image in imgDirArr:
         img = cv2.imread(os.path.join(imgdir, image), 0)
         mask2 = cv2.imread(os.path.join(maskdir, maskDirArr[imgDirArr.index(image)]), 0)
@@ -139,7 +137,7 @@ if __name__ == '__main__':
         img = cv2.resize(img2, (960, 480))
         out = "BatchD-F/" + image
         cv2.imwrite(out,img)
-        
+    """    
     detector, matcher = init_feature(feature_name)
 
     # if img1 is None:
@@ -157,7 +155,7 @@ if __name__ == '__main__':
     print('using', feature_name)
 
     pool=ThreadPool(processes = cv2.getNumberOfCPUs())
-
+    matchCountArr = []
     def match_and_draw(win, img1, img2, kp1, kp2, desc1, desc2):
         with Timer('matching'):
             raw_matches = matcher.knnMatch(desc1, trainDescriptors = desc2, k = 2) #2
@@ -165,13 +163,15 @@ if __name__ == '__main__':
         if len(p1) >= 4:
             H, status = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
             print('%d / %d  inliers/matched' % (np.sum(status), len(status)))
+            matchCount = np.sum(status)
+            matchCountArr.append(matchCount)
             # do not draw outliers (there will be a lot of them)
             kp_pairs = [kpp for kpp, flag in zip(kp_pairs, status) if flag]
         else:
             H, status = None, None
             print('%d matches found, not enough for homography estimation' % len(p1))
 
-        vis = explore_match(win, img1, img2, kp_pairs, None, H)
+        #vis = explore_match(win, img1, img2, kp_pairs, None, H)
 
     for patched in patchDirArr:
         img1 = cv2.imread(os.path.join(patchedir, patched), 0)
@@ -183,3 +183,12 @@ if __name__ == '__main__':
             match_and_draw('affine find_obj', img1, img2, kp1, kp2, desc1, desc2)
             cv2.waitKey()
             cv2.destroyAllWindows()
+
+    np.transpose(matchCountArr)
+
+    with open('results.csv', 'w', newline = '') as f:
+        writer = csv.writer(f)
+        
+        for matchCount in matchCountArr:
+            writer.writerow([matchCount])
+    print('done!')
