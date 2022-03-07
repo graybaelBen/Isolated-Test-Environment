@@ -117,8 +117,10 @@ def explore_match(win, img1, img2, kp_pairs, status = None, H = None):
         if inlier:
             cv2.line(vis, (x1, y1), (x2, y2), green)
 
-    #cv2.namedWindow(win, cv2.WINDOW_NORMAL) 
-    cv2.imshow(win, vis)
+    #cv2.namedWindow(win, cv2.WINDOW_NORMAL)
+    out = "result_images/" + win
+    cv2.imwrite(out, vis) 
+    #cv2.imshow(win, vis)
 
 
     def onmouse(event, x, y, flags, param):
@@ -139,8 +141,8 @@ def explore_match(win, img1, img2, kp_pairs, status = None, H = None):
             cur_vis = cv2.drawKeypoints(cur_vis, kp1s, None, flags=4, color=kp_color)
             cur_vis[h1:,:] = cv2.drawKeypoints(cur_vis[h1:,:], kp2s, None, flags=4, color=kp_color)
 
-        cv2.imshow(win, cur_vis)
-    cv2.setMouseCallback(win, onmouse)
+        #cv2.imshow(win, cur_vis)
+    #cv2.setMouseCallback(win, onmouse)
     return vis
 
 
@@ -179,7 +181,7 @@ if __name__ == '__main__':
     kp2, desc2 = detector.detectAndCompute(img2, None)
     print('img1 - %d features, img2 - %d features' % (len(kp1), len(kp2)))
 
-    def match_and_draw(win):
+"""     def match_and_draw(win):
         print('matching...')
         raw_matches = matcher.knnMatch(desc1, trainDescriptors = desc2, k = 2) #2
         p1, p2, kp_pairs = filter_matches(kp1, kp2, raw_matches)
@@ -194,4 +196,4 @@ if __name__ == '__main__':
 
     match_and_draw('find_obj')
     cv2.waitKey()
-    cv2.destroyAllWindows()
+    cv2.destroyAllWindows() """

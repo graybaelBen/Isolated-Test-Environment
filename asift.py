@@ -117,9 +117,9 @@ if __name__ == '__main__':
     feature_name = opts.get('--feature', 'sift-flann')
     print(feature_name)
 
-    imgdir = 'BatchD'
-    maskdir = 'BatchDM'
-    patchedir = 'BatchD-F'
+    imgdir = 'Batch1/Batch1.1/img'
+    maskdir = 'Batch1/Batch1.1/mask'
+    patchedir = 'Batch1/Batch1.1/patched'
     # graydir = 'BatchDG'
 
     imgDirArr = os.listdir(imgdir)
@@ -171,7 +171,7 @@ if __name__ == '__main__':
             H, status = None, None
             print('%d matches found, not enough for homography estimation' % len(p1))
 
-        #vis = explore_match(win, img1, img2, kp_pairs, None, H)
+        vis = explore_match(win, img1, img2, kp_pairs, None, H)
 
     for patched in patchDirArr:
         img1 = cv2.imread(os.path.join(patchedir, patched), 0)
@@ -180,7 +180,8 @@ if __name__ == '__main__':
             img2 = cv2.imread(os.path.join(patchedir, compare), 0)
             kp2, desc2 = affine_detect(detector, img2, pool = pool)
             print('img1 - %d features, img2 - %d features' % (len(kp1), len(kp2)))
-            match_and_draw('affine find_obj', img1, img2, kp1, kp2, desc1, desc2)
+            match_and_draw(patched+"_"+compare, img1, img2, kp1, kp2, desc1, desc2)
+            #match_and_draw('affine find_obj', img1, img2, kp1, kp2, desc1, desc2)
             cv2.waitKey()
             cv2.destroyAllWindows()
 
