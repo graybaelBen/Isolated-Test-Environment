@@ -13,14 +13,20 @@ class FLANN_matcher:
     # pass in relative file path of current directory such as Batch1/B1.1
     def match(des1, des2, image, compare, kp1, kp2, current_dir):
 
-        image1 = cv2.imread(os.path.join(current_dir,image))
-        image2 = cv2.imread(os.path.join(current_dir,compare))
+        image1 = cv2.imread(os.path.join(current_dir,"processed",image))
+        image2 = cv2.imread(os.path.join(current_dir,"processed",compare))
+        print("image1,", os.path.join(current_dir,"processed",image))
     
         # FLANN parameters
-        #FLANN_INDEX_KDTREE = 0
-        FLANN_INDEX_LSH = 6
-        #index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-        index_params = dict(algorithm = FLANN_INDEX_LSH, table_number = 6, key_size = 12, multi_probe_level = 1)
+     
+       # ORB
+       # FLANN_INDEX_LSH = 6
+       # index_params = dict(algorithm = FLANN_INDEX_LSH, table_number = 6, key_size = 12, multi_probe_level = 1)
+
+        # SIFT
+        FLANN_INDEX_KDTREE = 0
+        index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+
         search_params = dict(checks=50)   # or pass empty dictionary
 
         flann = cv2.FlannBasedMatcher(index_params,search_params)
@@ -47,14 +53,16 @@ class FLANN_matcher:
                            singlePointColor=(255, 0, 0),
                            matchesMask=matchesMask,
                            flags=cv2.DrawMatchesFlags_DEFAULT)
-
+        print("i should be printing")  
         matchesDrawn = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
-        results = os.path.join(current_dir,"results",compare)
+        compared_images = image,"+",compare
+        results = os.path.join(current_dir,"results",image+compare)
+        print(results)
         cv2.imwrite(results,matchesDrawn)
 
         return matchCount
 
-#draw matches on images
+#draw matches on images``
 '''
 BACKUP ARCHIVE
 

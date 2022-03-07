@@ -38,7 +38,7 @@ grayDirArr = os.listdir(graydir)
 processor.threshold(imgdir, maskdir, processeddir)
 # COMMENT OUT IF NO PROCESSING NEEDED
 imgDirArr = os.listdir(processeddir)
-
+imgdir = processeddir
 
 
 # loop through image directory, generate keypoints and grayscale images
@@ -72,7 +72,9 @@ desArray = []
 grayDirArr = os.listdir(graydir)
 #print(grayDirArr)
 for gray in grayDirArr:
+    print(os.path.join(graydir, gray))
     gray_img = cv2.imread(os.path.join(graydir, gray))
+    print(kpCountArray)
     kp = kpArray[grayDirArr.index(gray)]
     kp, des = descriptor.descript(gray_img, kp)
     #ORB
@@ -104,6 +106,7 @@ for image in imgDirArr:
         #ORB
         #print(img2Index)
         #matchCount += matcher.match(desArray[img1Index], desArray[img2Index] ,image, compare, kpArray[img1Index], kpArray[img2Index])
+        
         matchCountArray.append(matchCount)
         a += 1
         print(a)
