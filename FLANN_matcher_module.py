@@ -11,12 +11,9 @@ import csv
 class FLANN_matcher:
     
     # pass in relative file path of current directory such as Batch1/B1.1
-    def match(des1, des2, image, compare, kp1, kp2, current_dir):
+    def match(des1, des2, image1, image2, kp1, kp2):
 
-        image1 = cv2.imread(os.path.join(current_dir,"processed",image))
-        image2 = cv2.imread(os.path.join(current_dir,"processed",compare))
-        print("image1,", os.path.join(current_dir,"processed",image))
-    
+
         # FLANN parameters
      
        # ORB
@@ -47,20 +44,15 @@ class FLANN_matcher:
             except ValueError:
                 pass
 
-
         #drawing code
         draw_params = dict(matchColor=(0, 255, 0),
                            singlePointColor=(255, 0, 0),
                            matchesMask=matchesMask,
                            flags=cv2.DrawMatchesFlags_DEFAULT)
-        print("i should be printing")  
-        matchesDrawn = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
-        compared_images = image,"+",compare
-        results = os.path.join(current_dir,"results",image+compare)
-        print(results)
-        cv2.imwrite(results,matchesDrawn)
 
-        return matchCount
+        drawnMatches = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
+
+        return matchCount, drawnMatches
 
 #draw matches on images``
 '''

@@ -4,7 +4,49 @@ from matplotlib import pyplot as plt
 import os
 
 class processor:
-    def threshold(imgdir, maskdir, savedir):
+
+    def threshold(image):
+       
+        image = cv2.medianBlur(image,5)
+        return cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_MEAN_C,\
+                        cv2.THRESH_BINARY_INV,11,2)
+
+    def mask(image, mask):
+        return cv2.bitwise_and(image, image, mask= mask) 
+
+    def grayscale(image):
+        return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+
+    def erosionDialation(imgPath,iterations=1):
+        # Python program to demonstrate erosion and
+        # dilation of images.
+
+        # Reading the input image
+        img = cv2.imread(imgPath, 0)
+        
+        # Taking a matrix of size 5 as the kernel
+        kernel = np.ones((5,5), np.uint8)
+        
+        # The first parameter is the original image,
+        # kernel is the matrix with which image is
+        # convolved and third parameter is the number
+        # of iterations, which will determine how much
+        # you want to erode/dilate a given image.
+        img_erosion = cv2.erode(img, kernel, iterations=1)
+        img_dilation = cv2.dilate(img, kernel, iterations=1)
+        
+        cv2.imshow('Input', img)
+        cv2.imshow('Dilation', img_erosion)
+        cv2.imshow('Erosion', img_dilation)
+        img_erosion_dilation = cv2.erode(img_dilation, kernel, iterations=1)
+        cv2.imshow("Erosion->Dialation", img_erosion_dilation)
+        
+        cv2.waitKey(0)
+
+    '''
+    
+     def threshold(imgdir, maskdir, savedir):
         imgDirArr = os.listdir(imgdir)
         maskDirArr = os.listdir(maskdir)
         imgDirArr.sort()
@@ -22,6 +64,8 @@ class processor:
 
             cv2.imwrite(os.path.join(savedir, image), thresh )
 
+
+   
     def mask(imgdir, maskdir, savedir):
 
         imgDirArr = os.listdir(imgdir)
@@ -38,3 +82,5 @@ class processor:
             img = combo
             #cv2.imshow("mask on img", masked)
             cv2.imwrite(os.path.join(savedir, image), combo)
+
+                '''
