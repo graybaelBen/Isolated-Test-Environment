@@ -21,6 +21,7 @@ matcher = FLANN_matcher
 
 #assign active directories
 current_dir = os.path.join('Batch1','B1.1')
+
 imgdir = os.path.join(current_dir,'images')
 maskdir = os.path.join(current_dir,'masks')
 processeddir = os.path.join(current_dir,'processed')
@@ -29,31 +30,31 @@ imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
 
 # Image Processing
-for idx, image in enumerate(imgDirArr):
-    img = os.path.join(imgdir, image)
-    mask = os.path.join(maskdir, maskDirArr[idx])
-    img = cv2.imread(img,0)
-    mask = cv2.imread(mask,0)
+for idx, img in enumerate(imgDirArr):
+    image = cv2.imread(os.path.join(imgdir, img))
+    mask = cv2.imread(os.path.join(maskdir, maskDirArr[idx]),0)
 
-    # processed = processor.grayscale(img)
-    processed = processor.mask(img, mask)
+    processed = image
+    processed = processor.grayscale(processed)
+    processed = processor.mask(processed, mask)
     processed = processor.threshold(processed)
 
-    cv2.imwrite(os.path.join(processeddir, image), processed)
+    cv2.imwrite(os.path.join(processeddir, img), processed)
 
-#imgDirArr = os.listdir(processeddir)
-#imgdir = processeddir
+imgDirArr = os.listdir(processeddir)
+imgdir = processeddir
 
 # loop through image directory, generate keypoints and grayscale images
 kpArray = []
 kpCountArray = []
 
-for idx, image in enumerate(imgDirArr):
-    img = cv2.imread(os.path.join(imgdir, image))
+for idx, img in enumerate(imgDirArr):
+    image = cv2.imread(os.path.join(imgdir, img),0)
     mask = cv2.imread(os.path.join(maskdir, maskDirArr[idx]),0)
-    print(os.path.join(imgdir, image))
+    print(os.path.join(imgdir, img))
     print(os.path.join(maskdir, maskDirArr[idx]))
-    kp = detector.detect(img,mask)
+
+    kp = detector.detect(image,mask)
     kpArray.append(kp)
     kpCountArray.append(len(kp))
     
@@ -70,13 +71,13 @@ print('kpcount length :', len(kpCountArray))
 
 # loop through grayscale directory, generate descriptors
 desArray = []
-#print(grayDirArr)
-for idx, image in enumerate(imgDirArr):
 
-    img = cv2.imread(os.path.join(imgdir, image))
+for idx, img in enumerate(imgDirArr):
+
+    image = cv2.imread(os.path.join(imgdir, img))
     print(kpCountArray)
     kp = kpArray[idx]
-    kp, des = descriptor.descript(img ,kp)
+    kp, des = descriptor.descript(image ,kp)
     #RootSIFT
     #des /= (des.sum(axis=1, keepdims=True) + 1e-7)
     #des = numpy.sqrt(des)
@@ -89,7 +90,7 @@ for idx, image in enumerate(imgDirArr):
     desArray.append(des)
 
 #debugging
-#print('descriptor length :', len(desArray))
+print('descriptor length :', len(desArray))
 
 # loop through all combinations and compare images
 matchCountArray = []
@@ -99,9 +100,7 @@ for idx1, img1 in enumerate(imgDirArr):
 
     # internal loop starts at image in the next index
     for idx2, img2 in enumerate(imgDirArr[idx1+1:]):
-        #print(compare)
-        #print(img1Index)
-        
+  
         image1 = cv2.imread(os.path.join(imgdir,img1))
         image2 = cv2.imread(os.path.join(imgdir,img2))
         matchCount, drawnMatches = matcher.match(desArray[idx1], desArray[idx1+idx2+1], image1, image2, kpArray[idx1], kpArray[idx1+idx2+1])
@@ -117,7 +116,6 @@ for idx1, img1 in enumerate(imgDirArr):
         matchCountArray.append(matchCount)
         print(idx2)
 
-print(matchCount)
 # print to csv
 numpy.transpose(kpCountArray)
 numpy.transpose(matchCountArray)
