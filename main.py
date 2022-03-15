@@ -37,11 +37,17 @@ for idx, img in enumerate(imgDirArr):
     processed = processor.grayscale(processed)
     processed = processor.mask(processed, mask)
     processed = processor.threshold(processed)
+    
+    
+    processed = processor.dilate(processed)
+    processed = processor.erode(processed)
     cv2.imwrite(os.path.join(processeddir, img), processed)
+
 # COMMENT OUT FOR NO PROCESSING
 imgDirArr = os.listdir(processeddir)
 imgdir = processeddir
 
+#'''
 
 # Keypoint Detection
 kpArray = []
@@ -118,4 +124,6 @@ with open('results.csv', 'w', newline = '') as f:
     writer.writerow(kpCountArray)
     for matchCount in matchCountArray:
         writer.writerow([matchCount])
+
+#'''
 print('done!')

@@ -33,7 +33,7 @@ class FLANN_matcher:
         draw_params = dict(matchColor=(0, 255, 0),
                            singlePointColor=(255, 0, 0),
                            matchesMask=matchesMask,
-                           flags=cv2.DrawMatchesFlags_DEFAULT)
+                           flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
         drawnMatches = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
 
         return matchCount, drawnMatches

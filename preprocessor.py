@@ -1,4 +1,5 @@
 import cv2
+from cv2 import ellipse
 import numpy as np
 from matplotlib import pyplot as plt
 import os
@@ -6,10 +7,11 @@ import os
 class processor:
 
     def threshold(image):
-       
+       #cv2.ADAPTIVE_THRESH_MEAN_C
+       #cv2.ADAPTIVE_THRESH_GAUSSIAN_C
         image = cv2.medianBlur(image,5)
-        return cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_MEAN_C,\
-                        cv2.THRESH_BINARY_INV,11,2)
+        return cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
+                        cv2.THRESH_BINARY,7,2)
 
     def mask(image, mask):
         return cv2.bitwise_and(image, image, mask= mask) 
@@ -17,6 +19,19 @@ class processor:
     def grayscale(image):
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
+    def erode(image):
+        erosion_size = 1
+        erosion_shape = 2     
+        element = cv2.getStructuringElement(erosion_shape, (2 * erosion_size + 1, 2 * erosion_size + 1),
+                                        (erosion_size, erosion_size))  
+        return cv2.erode(image, element, iterations=1)
+
+    def dilate(image):
+        dilatation_size = 1
+        dilation_shape = 2
+        element = cv2.getStructuringElement(dilation_shape, (2 * dilatation_size + 1, 2 * dilatation_size + 1),
+                                        (dilatation_size, dilatation_size))
+        return cv2.dilate(image, element, iterations=1)
 
     def erosionDialation(imgPath,iterations=1):
         # Python program to demonstrate erosion and
