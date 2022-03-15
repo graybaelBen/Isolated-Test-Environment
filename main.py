@@ -19,39 +19,48 @@ descriptor = SIFT_descriptor
 # descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 
-#assign active directories
-current_dir = os.path.join('Batch2','B2.5')
+# assign active directories
+current_dir = os.path.join('Batch1','B1.1')
 
 imgdir = os.path.join(current_dir,'images')
 maskdir = os.path.join(current_dir,'masks')
-graydir = os.path.join(current_dir,'gray')
 processeddir = os.path.join(current_dir,'processed')
-
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
-grayDirArr = os.listdir(graydir)
 
-#process images 
-##COMMENT OUT IF NO PROCESSING NEEDED##
-processor.threshold(imgdir, maskdir, processeddir)
+# Image Processing
+for idx, img in enumerate(imgDirArr):
+    image = cv2.imread(os.path.join(imgdir, img))
+    mask = cv2.imread(os.path.join(maskdir, maskDirArr[idx]),0)
+
+    processed = image
+    processed = processor.grayscale(processed)
+    processed = processor.mask(processed, mask)
+    processed = processor.threshold(processed)
+    
+    
+    processed = processor.dilate(processed)
+    processed = processor.erode(processed)
+    cv2.imwrite(os.path.join(processeddir, img), processed)
+
+# COMMENT OUT FOR NO PROCESSING
 imgDirArr = os.listdir(processeddir)
 imgdir = processeddir
 
+#'''
 
-# loop through image directory, generate keypoints and grayscale images
+# Keypoint Detection
 kpArray = []
 kpCountArray = []
-grayArray = []
-for image in imgDirArr:
-    img = os.path.join(imgdir, image)
-    mask = os.path.join(maskdir, maskDirArr[imgDirArr.index(image)])
-    kp, gray_img = detector.detect(img,mask)
-    kpArray.append(kp)
-    grayArray.append(gray_img)
-    kpCountArray.append(len(kp))
+for idx, img in enumerate(imgDirArr):
+    image = cv2.imread(os.path.join(imgdir, img),0)
+    mask = cv2.imread(os.path.join(maskdir, maskDirArr[idx]),0)
+    print(os.path.join(imgdir, img))
+    print(os.path.join(maskdir, maskDirArr[idx]))
 
-    # save gray images - only needed on the first run of a batch
-    cv2.imwrite(os.path.join(graydir, image), gray_img)
+    kp = detector.detect(image,mask)
+    kpArray.append(kp)
+    kpCountArray.append(len(kp))
     
     #ORB
     #kp, gray_img = detector.ORB_detect(img,mask)
@@ -60,61 +69,52 @@ for image in imgDirArr:
     #kpCountArray.append(len(kp))
     #cv2.imwrite(os.path.join(graydir, image), gray_img)
 
-#debugging
-#print('gray len: ', len(grayArray))
-print('kpcount length :', len(kpCountArray))
 
-# loop through grayscale directory, generate descriptors
+#print('kpcount length :', len(kpCountArray))
+
+# Keypoint Description
 desArray = []
-grayDirArr = os.listdir(graydir)
-#print(grayDirArr)
-for gray in grayDirArr:
-    print(os.path.join(graydir, gray))
-    gray_img = cv2.imread(os.path.join(graydir, gray))
+for idx, img in enumerate(imgDirArr):
+
+    image = cv2.imread(os.path.join(imgdir, img))
     print(kpCountArray)
-    kp = kpArray[grayDirArr.index(gray)]
-    kp, des = descriptor.descript(gray_img,kp)
+    kp = kpArray[idx]
+    kp, des = descriptor.descript(image ,kp)
+
     #RootSIFT
     #des /= (des.sum(axis=1, keepdims=True) + 1e-7)
     #des = numpy.sqrt(des)
     #RootSIFT end
-    kp, des = descriptor.descript(gray_img, kp)
     #ORB
     #kp, des = descriptor.ORB_descript(gray_img,kp)
 
-    #print(type(des[0]))
-
     desArray.append(des)
 
-#debugging
 #print('descriptor length :', len(desArray))
 
-# loop through all combinations and compare images
+
+# Image Comparison
 matchCountArray = []
-# starts at image in index 0
 matchCount = 0
-for image in imgDirArr:
-    #print(image)
-    img1Index = imgDirArr.index(image)
-    a = 0
-    print('image', img1Index+1, '/', len(imgDirArr))
+for idx1, img1 in enumerate(imgDirArr):
     # internal loop starts at image in the next index
-    for compare in imgDirArr[imgDirArr.index(image)+1:]:
-        #print(compare)
-        #print(img1Index)
-        
-        img2Index = imgDirArr.index(compare)
-        matchCount = matcher.match(desArray[img1Index], desArray[img2Index], image, compare, kpArray[img1Index], kpArray[img2Index],current_dir)
-        
+    for idx2, img2 in enumerate(imgDirArr[idx1+1:]):
+  
+        image1 = cv2.imread(os.path.join(imgdir,img1))
+        image2 = cv2.imread(os.path.join(imgdir,img2))
+        matchCount, drawnMatches = matcher.match(desArray[idx1], desArray[idx1+idx2+1], image1, image2, kpArray[idx1], kpArray[idx1+idx2+1])
+        compared_images = img1+img2
+        results = os.path.join(current_dir,"results", compared_images)
+        print(results)
+        cv2.imwrite(results,drawnMatches)
+
         #ORB
         #print(img2Index)
         #matchCount += matcher.match(desArray[img1Index], desArray[img2Index] ,image, compare, kpArray[img1Index], kpArray[img2Index])
         
         matchCountArray.append(matchCount)
-        a += 1
-        print(a)
+        print(idx2)
 
-print(matchCount)
 # print to csv
 numpy.transpose(kpCountArray)
 numpy.transpose(matchCountArray)
@@ -124,4 +124,6 @@ with open('results.csv', 'w', newline = '') as f:
     writer.writerow(kpCountArray)
     for matchCount in matchCountArray:
         writer.writerow([matchCount])
+
+#'''
 print('done!')
