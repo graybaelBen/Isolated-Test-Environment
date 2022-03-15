@@ -38,7 +38,7 @@ for idx, img in enumerate(imgDirArr):
     processed = processor.mask(processed, mask)
     processed = processor.threshold(processed)
     cv2.imwrite(os.path.join(processeddir, img), processed)
-
+# COMMENT OUT FOR NO PROCESSING
 imgDirArr = os.listdir(processeddir)
 imgdir = processeddir
 
