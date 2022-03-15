@@ -1,6 +1,4 @@
-import numpy as np
 import cv2
-from SIFT_detector_module import SIFT_detector
 
 class SIFT_descriptor:
 

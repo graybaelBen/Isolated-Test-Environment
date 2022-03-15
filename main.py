@@ -19,13 +19,12 @@ descriptor = SIFT_descriptor
 # descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 
-#assign active directories
+# assign active directories
 current_dir = os.path.join('Batch1','B1.1')
 
 imgdir = os.path.join(current_dir,'images')
 maskdir = os.path.join(current_dir,'masks')
 processeddir = os.path.join(current_dir,'processed')
-
 imgDirArr = os.listdir(imgdir)
 maskDirArr = os.listdir(maskdir)
 
@@ -38,16 +37,15 @@ for idx, img in enumerate(imgDirArr):
     processed = processor.grayscale(processed)
     processed = processor.mask(processed, mask)
     processed = processor.threshold(processed)
-
     cv2.imwrite(os.path.join(processeddir, img), processed)
 
 imgDirArr = os.listdir(processeddir)
 imgdir = processeddir
 
-# loop through image directory, generate keypoints and grayscale images
+
+# Keypoint Detection
 kpArray = []
 kpCountArray = []
-
 for idx, img in enumerate(imgDirArr):
     image = cv2.imread(os.path.join(imgdir, img),0)
     mask = cv2.imread(os.path.join(maskdir, maskDirArr[idx]),0)
@@ -65,19 +63,18 @@ for idx, img in enumerate(imgDirArr):
     #kpCountArray.append(len(kp))
     #cv2.imwrite(os.path.join(graydir, image), gray_img)
 
-#debugging
-#print('gray len: ', len(grayArray))
-print('kpcount length :', len(kpCountArray))
 
-# loop through grayscale directory, generate descriptors
+#print('kpcount length :', len(kpCountArray))
+
+# Keypoint Description
 desArray = []
-
 for idx, img in enumerate(imgDirArr):
 
     image = cv2.imread(os.path.join(imgdir, img))
     print(kpCountArray)
     kp = kpArray[idx]
     kp, des = descriptor.descript(image ,kp)
+
     #RootSIFT
     #des /= (des.sum(axis=1, keepdims=True) + 1e-7)
     #des = numpy.sqrt(des)
@@ -85,19 +82,15 @@ for idx, img in enumerate(imgDirArr):
     #ORB
     #kp, des = descriptor.ORB_descript(gray_img,kp)
 
-    #print(type(des[0]))
-
     desArray.append(des)
 
-#debugging
-print('descriptor length :', len(desArray))
+#print('descriptor length :', len(desArray))
 
-# loop through all combinations and compare images
+
+# Image Comparison
 matchCountArray = []
-# starts at image in index 0
 matchCount = 0
 for idx1, img1 in enumerate(imgDirArr):
-
     # internal loop starts at image in the next index
     for idx2, img2 in enumerate(imgDirArr[idx1+1:]):
   
