@@ -33,6 +33,23 @@ class processor:
                                         (dilatation_size, dilatation_size))
         return cv2.dilate(image, element, iterations=1)
 
+    def draw_cross_keypoints(img, keypoints, color):
+        """ https://stackoverflow.com/questions/67762285/drawing-sift-keypoints
+        Draw keypoints as crosses, and return the new image with the crosses. """
+        img_kp = img.copy()  # Create a copy of img
+
+        # Iterate over all keypoints and draw a cross on evey point.
+        for kp in keypoints:
+            x, y = kp.pt  # Each keypoint as an x, y tuple  https://stackoverflow.com/questions/35884409/how-to-extract-x-y-coordinates-from-opencv-cv2-keypoint-object
+
+            x = int(round(x))  # Round an cast to int
+            y = int(round(y))
+
+            # Draw a cross with (x, y) center
+            cv2.drawMarker(img_kp, (x, y), color, markerType=cv2.MARKER_CROSS, markerSize=5, thickness=1, line_type=cv2.LINE_8)
+
+        return img_kp  # Return the image with the drawn crosses.
+
     def erosionDialation(imgPath,iterations=1):
         # Python program to demonstrate erosion and
         # dilation of images.
