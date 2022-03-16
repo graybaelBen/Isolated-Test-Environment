@@ -117,9 +117,9 @@ if __name__ == '__main__':
     feature_name = opts.get('--feature', 'sift-flann')
     print(feature_name)
 
-    imgdir = 'Batch1/Batch1.1/img'
-    maskdir = 'Batch1/Batch1.1/mask'
-    patchedir = 'Batch1/Batch1.1/patched'
+    imgdir = 'Batch1/Batch1.3/img'
+    maskdir = 'Batch1/Batch1.3/mask'
+    patchedir = 'Batch1/Batch1.3/patched'
     # graydir = 'BatchDG'
 
     imgDirArr = os.listdir(imgdir)
