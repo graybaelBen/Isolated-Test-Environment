@@ -16,7 +16,7 @@ from preprocessor  import processor
 # assign modules
 detector = SIFT_detector
 descriptor = SIFT_descriptor
-# descriptor = RootSIFT_descriptor
+#descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 
 # assign active directories
