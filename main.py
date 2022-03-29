@@ -10,7 +10,7 @@ from ORB_descriptor_module import ORB_descriptor # ins: kp, gray_img; outs: kp, 
 from SIFT_detector_module import SIFT_detector # ins: img_filename, mask_filename; outs: kp, gray_img
 from SIFT_descriptor_module import SIFT_descriptor
 from FLANN_matcher_module import FLANN_matcher # ins: kp, des; outs:
-from preprocessor  import processor
+from preprocessor  import Processor
 #from RootSIFT_descriptor_module import RootSIFT_descriptor
 
 # assign modules
@@ -18,9 +18,11 @@ detector = SIFT_detector
 descriptor = SIFT_descriptor
 #descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
+# instatiate object of class
+process = Processor()
 
 # assign active directories
-current_dir = os.path.join('Demo','D1.1')
+current_dir = os.path.join('Batch1','B1.2')
 
 imgdir = os.path.join(current_dir,'images')
 maskdir = os.path.join(current_dir,'masks')
@@ -32,20 +34,20 @@ maskDirArr = os.listdir(maskdir)
 for idx, img in enumerate(imgDirArr):
     image = cv2.imread(os.path.join(imgdir, img))
     mask = cv2.imread(os.path.join(maskdir, maskDirArr[idx]),0)
-    cv2.imshow("Original Mask", mask)
-    cv2.imshow("Original Image",image)
-    cv2.waitKey(0)
-
-    processed = image
-    processed = processor.grayscale(processed)
-    processed = processor.mask(processed, mask)
-    processed = processor.threshold(processed)
-    processed = processor.dilate(processed)
-    processed = processor.erode(processed)
     
+    processed = image
+    processed = process.grayscale(processed)
+    processed = process.mask(processed, mask)
+    #processed = process.threshold(processed)
+   
+    processed = process.cluster_quantize(processed,4)   
+    # image is inverted so erode and dilate are swapped from our perspective
+    processed = process.erode(processed,3)
+    processed = process.dilate(processed,10)
+
     cv2.imwrite(os.path.join(processeddir, img), processed)
-    cv2.imshow("Processed Image",processed)
-    cv2.waitKey(0)
+    #cv2.imshow("Processed Image",processed)
+    #cv2.waitKey(0)
 
 # COMMENT OUT FOR NO PROCESSING
 imgDirArr = os.listdir(processeddir)
@@ -65,9 +67,8 @@ for idx, img in enumerate(imgDirArr):
     kp = detector.detect(image,mask)
     kpArray.append(kp)
     kpCountArray.append(len(kp))
-    img_kp = processor.draw_cross_keypoints(image, kp, color=(120,157,187))
-    cv2.imshow("KeyPoints",img_kp)
-    cv2.waitKey(0)
+
+
     #ORB
     #kp, gray_img = detector.ORB_detect(img,mask)
     #kpArray.append(kp)
@@ -114,8 +115,6 @@ for idx1, img1 in enumerate(imgDirArr):
         print(results)
         cv2.imwrite(results,drawnMatches)
 
-        cv2.imshow("Comparison", drawnMatches)
-        cv2.waitKey(0)
         #ORB
         #print(img2Index)
         #matchCount += matcher.match(desArray[img1Index], desArray[img2Index] ,image, compare, kpArray[img1Index], kpArray[img2Index])
