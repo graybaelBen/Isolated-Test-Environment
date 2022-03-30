@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 import os
 from PIL import Image
 from sklearn.cluster import MiniBatchKMeans
+from BLOB_detector import BLOB_detector
 
 
 class Processor:
@@ -18,6 +19,26 @@ class Processor:
 
     def mask(self, image, mask):
         return cv2.bitwise_and(image, image, mask= mask) 
+    
+    def spot_mask(self, image):
+           
+        kps = BLOB_detector.detect(image)
+
+        # blank mask
+        mask = np.zeros(image.shape[:2], dtype="uint8")
+
+        # spot mask
+        for kp in kps:
+            x, y = kp.pt
+            #print("coordinates: ", int(x), y)
+            #print("size: ", kp.size)
+            cv2.circle(mask, (int(x), int(y)), int(kp.size), 255,-1)
+        masked = cv2.bitwise_and(image, image, mask=mask)
+        #cv2.imshow("Masked", masked)
+        #cv2.waitKey(0)
+
+        return masked, mask
+
 
     def grayscale(self, image):
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

@@ -5,8 +5,8 @@ class FLANN_matcher:
     def match(des1, des2, image1, image2, kp1, kp2):
    
        # ORB
-       # FLANN_INDEX_LSH = 6
-       # index_params = dict(algorithm = FLANN_INDEX_LSH, table_number = 6, key_size = 12, multi_probe_level = 1)
+        FLANN_INDEX_LSH = 6
+        #index_params = dict(algorithm = FLANN_INDEX_LSH, table_number = 6, key_size = 12, multi_probe_level = 1)
 
         # SIFT
         FLANN_INDEX_KDTREE = 0

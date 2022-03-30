@@ -4,6 +4,7 @@ import os
 
 #https://learnopencv.com/blob-detection-using-opencv-python-c/
 
+
 ori1 = cv2.imread('processed/02__Station32__Camera1__2012-7-14__4-48-10(7).JPG')
 im1 = cv2.imread("processed/02__Station32__Camera1__2012-7-14__4-48-10(7).JPG", cv2.IMREAD_GRAYSCALE)
 
@@ -11,17 +12,16 @@ ori2 = cv2.imread('processed/02__Station13__Camera1__2012-9-13__2-21-36(2).JPG')
 im2 = cv2.imread("processed/02__Station13__Camera1__2012-9-13__2-21-36(2).JPG", cv2.IMREAD_GRAYSCALE)
 
 
-
 # Setup SimpleBlobDetector parameters.
 params = cv2.SimpleBlobDetector_Params()
 
 # Change thresholds
-params.minThreshold = 5
+params.minThreshold = 1
 params.maxThreshold = 1000
 
 # Filter by Area.
 params.filterByArea = True
-params.minArea = 200
+params.minArea = 100
 
 # Filter by Circularity
 params.filterByCircularity = False
