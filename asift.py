@@ -117,9 +117,9 @@ if __name__ == '__main__':
     feature_name = opts.get('--feature', 'sift-flann')
     print(feature_name)
 
-    imgdir = 'Batch1/Batch1.3/img'
-    maskdir = 'Batch1/Batch1.3/mask'
-    patchedir = 'Batch1/Batch1.3/patched'
+    imgdir = 'Batch1/pristine/img'
+    maskdir = 'Batch1/pristine/mask'
+    patchedir = 'Batch1/pristine/patched'
     # graydir = 'BatchDG'
 
     imgDirArr = os.listdir(imgdir)
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     patchDirArr = os.listdir(patchedir)
     # grayDirArr = os.listdir(graydir)
     
-    """
+    
     for image in imgDirArr:
         img = cv2.imread(os.path.join(imgdir, image), 0)
         mask2 = cv2.imread(os.path.join(maskdir, maskDirArr[imgDirArr.index(image)]), 0)
@@ -135,10 +135,10 @@ if __name__ == '__main__':
         img2 = masked
         print(type(img))
         img = cv2.resize(img2, (960, 480))
-        out = patchedir + image
+        out = "Batch1/pristine/patched/" + image
         # ^^ out might be broken like this, try Batch1/Batch1.1/patched or whatever batch it is
         cv2.imwrite(out,img)
-    """    
+       
     detector, matcher = init_feature(feature_name)
 
     # if img1 is None:
