@@ -24,7 +24,7 @@ matcher = FLANN_matcher
 process = Processor()
 
 # assign active directories
-current_dir = os.path.join('Batch1','B1.1')
+current_dir = os.path.join('Batch1','pristine2send')
 
 imgdir = os.path.join(current_dir,'images')
 maskdir = os.path.join(current_dir,'masks')
@@ -52,11 +52,11 @@ for idx, img in enumerate(imgDirArr):
     # image is inverted so erode and dilate are swapped from our perspective
     processed = process.erode(processed,3)
     processed = process.dilate(processed,10)
-    spot_processed, spot_mask = process.spot_mask(processed)
+    #processed, spot_mask = process.spot_mask(processed)
 
     cv2.imwrite(os.path.join(processeddir, img), processed)
 
-    cv2.imwrite(os.path.join(spotMaskdir, maskDirArr[idx]), spot_mask)
+    #cv2.imwrite(os.path.join(spotMaskdir, maskDirArr[idx]), spot_mask)
     #cv2.imshow("Processed Image",processed)
     #cv2.waitKey(0)
 
