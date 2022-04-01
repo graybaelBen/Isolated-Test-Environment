@@ -22,23 +22,28 @@ class Processor:
     
     def spot_mask(self, image):
            
-        kps = BLOB_detector.detect(image)
+        regions = BLOB_detector.mser(image)
 
         # blank mask
         mask = np.zeros(image.shape[:2], dtype="uint8")
 
         # spot mask
-        for kp in kps:
-            x, y = kp.pt
+        #for kp in regions:
+            #x, y = kp.pt
             #print("coordinates: ", int(x), y)
             #print("size: ", kp.size)
-            cv2.circle(mask, (int(x), int(y)), int(kp.size), 255,-1)
+            #cv2.circle(mask, (int(x), int(y)), int(kp.size), 255,-1)       
+        hulls = [cv2.convexHull(p.reshape(-1, 1, 2)) for p in regions]
+        #for poly in hulls:
+        #    cv2.fillPoly(mask, poly,(255, 255, 255))
+        cv2.fillPoly(mask, hulls,(255, 255, 255))
+        #cv2.polylines(mask, hulls, 1, (0, 255, 0))
+
         masked = cv2.bitwise_and(image, image, mask=mask)
         #cv2.imshow("Masked", masked)
         #cv2.waitKey(0)
 
         return masked, mask
-
 
     def grayscale(self, image):
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

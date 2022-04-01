@@ -28,10 +28,9 @@ def mser(cv_image):
     vis = cv_image.copy()
     mser = cv2.MSER_create(delta,min_area,max_area,0.25,.2,200,1.01,0.003,5)
     regions, _ = mser.detectRegions(cv_image)
-    
+
 
     '''
-    
         for p in regions:
         xmax, ymax = np.amax(p, axis=0)
         xmin, ymin = np.amin(p, axis=0)
