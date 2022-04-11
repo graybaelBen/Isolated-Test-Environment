@@ -134,4 +134,4 @@ def run(batch="B1.1"):
             print(idx2)
     print(batch, " COMPLETE")
     return matchCountArray, kpCountArray
-#run()
+run()
