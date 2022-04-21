@@ -2,6 +2,8 @@
 import cv2
 import numpy as np
 import os
+from multiprocessing.pool import ThreadPool #ASIFT uses this
+
 
 # import modules
 from ORB_detector_module import ORB_detector # ins: img_filename, mask_filename; outs: kp, gray_img
@@ -11,6 +13,8 @@ from SIFT_descriptor_module import SIFT_descriptor
 from FLANN_matcher_module import FLANN_matcher # ins: kp, des; outs:
 from BLOB_detector import BLOB_detector
 from preprocessor  import Processor
+from ASIFT_module import affine_detect, match_and_dont_draw
+
 #from RootSIFT_descriptor_module import RootSIFT_descriptor
 
 # assign modules
@@ -28,6 +32,8 @@ def run(batch="B1.1"):
     imgdir = os.path.join(current_dir,'images')
     maskdir = os.path.join(current_dir,'masks')
     processeddir = os.path.join(current_dir,'processed')
+    patcheddir = os.path.join(current_dir, 'patched')
+
 
     if not os.path.exists(os.path.join(current_dir,'spotMask')):
         os.makedirs(os.path.join(current_dir,'spotMask'))
@@ -35,6 +41,7 @@ def run(batch="B1.1"):
 
     imgDirArr = os.listdir(imgdir)
     maskDirArr = os.listdir(maskdir)
+    patchedDirArr = os.listdir(patcheddir)
 
     # Image Processing
     for idx, img in enumerate(imgDirArr):
@@ -89,6 +96,7 @@ def run(batch="B1.1"):
         #cv2.imwrite(os.path.join(graydir, image), gray_img)
 
 
+
     #print('kpcount length :', len(kpCountArray))
 
     # Keypoint Description
@@ -110,6 +118,23 @@ def run(batch="B1.1"):
         desArray.append(des)
 
     #print('descriptor length :', len(desArray))
+
+    
+    #ASIFT detection+description (currently have to use pre-masked/patched data)
+    """
+    pool=ThreadPool(processes = cv2.getNumberOfCPUs())
+    #matchCountArr = []
+    for patched in patchedDirArr:
+        img1 = cv2.imread(os.path.join(patcheddir, patched), 0)
+        kp1, desc1 = affine_detect(detector, img1, pool = pool)
+        for compare in patchedDirArr[patchedDirArr.index(patched)+1:]:
+            img2 = cv2.imread(os.path.join(patcheddir, compare), 0)
+            kp2, desc2 = affine_detect(detector, img2, pool = pool)
+            print('img1 - %d features, img2 - %d features' % (len(kp1), len(kp2)))
+            ASIFT_matchCountArr=match_and_dont_draw(patched+"_"+compare, img1, img2, kp1, kp2, desc1, desc2)
+            
+    """
+
 
     # Image Comparison
     matchCountArray = []
