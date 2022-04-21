@@ -4,8 +4,8 @@ from pyhesaff._pyhesaff import argparse_hesaff_params
 import os
 import cv2
 import ubelt as ub
-import numpy
-import rhino3dm
+import numpy as np
+# import rhino3dm
 # from cv2 import Point2f
 
 # img_fpath = grab_test_imgpath(ub.argval('--fname', default='astro.png'))
@@ -26,6 +26,9 @@ imgBGR = cv2.imread(img_fpath)
 # print(vecs[0])
 # print(vecs[0].size)
 
+vecs = np.asarray(vecs, np.float32)
+vecs2 = np.asarray(vecs2, np.float32)
+
 # vecs2 = vecs
 
 FLANN_INDEX_KDTREE = 0
@@ -33,9 +36,18 @@ index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
 search_params = dict(checks=50)   # or pass empty dictionary
 flann = cv2.FlannBasedMatcher(index_params,search_params)
 matches = flann.knnMatch(vecs,vecs2,k=2)
-m, n = matches
-print(m.distance)
-print(n.distance)
+matchesMask = [[0,0] for _ in range(len(matches))]
+
+    # ratio test as per Lowe's paper
+matchCount = 0
+for i, pair in enumerate(matches):
+    try:
+        m, n = pair
+        if m.distance < 0.7*n.distance:
+            matchesMask[i]=[1,0]
+            matchCount += 1
+    except ValueError:
+        pass
 
 
 
