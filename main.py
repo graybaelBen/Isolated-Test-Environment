@@ -1,4 +1,5 @@
 # Isolated Test Environment Main
+from HessianAffine import HessianAffine
 import cv2
 import numpy as np
 import os
@@ -14,12 +15,16 @@ from FLANN_matcher_module import FLANN_matcher # ins: kp, des; outs:
 from BLOB_detector import BLOB_detector
 from preprocessor  import Processor
 from ASIFT_module import affine_detect, match_and_dont_draw
+from HessianAffine import HessianAffine
 
 #from RootSIFT_descriptor_module import RootSIFT_descriptor
 
+HA = HessianAffine()
+
 # assign modules
-detector = SIFT_detector
-descriptor = SIFT_descriptor
+detector = HA
+descriptor = HA
+
 #descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 # instatiate object of class

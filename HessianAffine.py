@@ -14,22 +14,23 @@ class HessianAffine:
         self.vecs = []
 
     def detect(self,image, mask):
-        # img_fpath = grab_test_imgpath(ub.argval('--fname', default='astro.png'))
-        current_dir = os.path.join('Demo','D1.1')
-        imgdir = os.path.join(current_dir,'images')
-        img_fpath = os.path.join(imgdir, '02__Station13__Camera1__2012-9-13__2-21-36(2).JPG')
-        img_fpath2 = os.path.join(imgdir, '02__Station32__Camera1__2012-7-14__4-48-10(7).JPG')
+        #get image path from image
+        img_fpath = os.curdir(image)
         print(img_fpath)
         kwargs = argparse_hesaff_params()
         print('kwargs = %r' % (kwargs,))
 
-        # removed tuple ( )
-        self.kpts, self.vecs = pyhesaff.detect_feats(img_fpath, **kwargs)
+        (self.kpts, self.vecs) = pyhesaff.detect_feats(img_fpath, **kwargs)
 
-        return self.kpts
+        cvkp = []
+        for i in range(len(self.kpts)):
+            cvkp.append(cv2.KeyPoint(x = self.kpts[i][0], y = self.kpts[i][1], size = 2))
+
+        return cvkp
      
     def descript(self, image, kp):
-        return self.kpts, self.vecs
+        casted_vecs = np.asarray(self.vecs, np.float32)
+        return self.kpts, casted_vecs
     
     def drawKeypoints():
         img_kp = imgBGR.copy()  # Create a copy of img
@@ -101,9 +102,7 @@ class HessianAffine:
         
         return matchCount, drawnMatches
         
-    def drawMatches():
-
-
+    #def drawMatches():
 
     def kpToEllipse(kp):
         x = round(int(kp[0]))
