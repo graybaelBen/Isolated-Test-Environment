@@ -14,7 +14,7 @@ from SIFT_descriptor_module import SIFT_descriptor
 from FLANN_matcher_module import FLANN_matcher # ins: kp, des; outs:
 from BLOB_detector import BLOB_detector
 from preprocessor  import Processor
-from ASIFT_module import affine_detect, match_and_dont_draw
+#from ASIFT_module import affine_detect, match_and_dont_draw
 from HessianAffine import HessianAffine
 
 #from RootSIFT_descriptor_module import RootSIFT_descriptor
@@ -46,7 +46,7 @@ def run(batch="pristine2send"):
 
     imgDirArr = os.listdir(imgdir)
     maskDirArr = os.listdir(maskdir)
-    patchedDirArr = os.listdir(patcheddir)
+    #patchedDirArr = os.listdir(patcheddir)
 
     # Image Processing
     for idx, img in enumerate(imgDirArr):
@@ -82,8 +82,14 @@ def run(batch="pristine2send"):
     kpArray = []
     kpCountArray = []
     for idx, img in enumerate(imgDirArr):
-        image = cv2.imread(os.path.join(imgdir, img),0)
-        mask = cv2.imread(os.path.join(maskdir, maskDirArr[idx]),0)
+        #if using HA, feed path instead of image
+        if(detector or descriptor == HA):
+            image = os.path.join(imgdir, img)
+            mask = os.path.join(maskdir, maskDirArr[idx])
+        else:
+            image = cv2.imread(os.path.join(imgdir, img),0)
+            mask = cv2.imread(os.path.join(maskdir, maskDirArr[idx]),0)
+
         print(os.path.join(imgdir, img))
         print(os.path.join(maskdir, maskDirArr[idx]))
 

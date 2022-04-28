@@ -15,7 +15,7 @@ class HessianAffine:
 
     def detect(self,image, mask):
         #get image path from image
-        img_fpath = os.curdir(image)
+        img_fpath = image
         print(img_fpath)
         kwargs = argparse_hesaff_params()
         print('kwargs = %r' % (kwargs,))
