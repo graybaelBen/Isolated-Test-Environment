@@ -35,6 +35,24 @@ from common import Timer
 from find_obj import init_feature, filter_matches, explore_match
 
 
+
+def match_and_dont_draw(img1, img2, kp1, kp2, desc1, desc2):
+        with Timer('matching'):
+            raw_matches = matcher.knnMatch(desc1, trainDescriptors = desc2, k = 2) #2
+        p1, p2, kp_pairs = filter_matches(kp1, kp2, raw_matches)
+        if len(p1) >= 4:
+            H, status = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
+            print('%d / %d  inliers/matched' % (np.sum(status), len(status)))
+            matchCount = np.sum(status)
+            matchCountArr.append(matchCount)
+            # do not draw outliers (there will be a lot of them)
+            kp_pairs = [kpp for kpp, flag in zip(kp_pairs, status) if flag]
+            return matchCountArr
+        else:
+            H, status = None, None
+            print('%d matches found, not enough for homography estimation' % len(p1))
+
+
 def affine_skew(tilt, phi, img, mask=None):
     '''
     affine_skew(tilt, phi, img, mask=None) -> skew_img, skew_mask, Ai
@@ -174,26 +192,6 @@ if __name__ == '__main__':
             print('%d matches found, not enough for homography estimation' % len(p1))
 
         vis = explore_match(win, img1, img2, kp_pairs, None, H)
-
-
-    def match_and_dont_draw(win, img1, img2, kp1, kp2, desc1, desc2):
-        with Timer('matching'):
-            raw_matches = matcher.knnMatch(desc1, trainDescriptors = desc2, k = 2) #2
-        p1, p2, kp_pairs = filter_matches(kp1, kp2, raw_matches)
-        if len(p1) >= 4:
-            H, status = cv2.findHomography(p1, p2, cv2.RANSAC, 5.0)
-            print('%d / %d  inliers/matched' % (np.sum(status), len(status)))
-            matchCount = np.sum(status)
-            matchCountArr.append(matchCount)
-            # do not draw outliers (there will be a lot of them)
-            kp_pairs = [kpp for kpp, flag in zip(kp_pairs, status) if flag]
-            return matchCountArr
-        else:
-            H, status = None, None
-            print('%d matches found, not enough for homography estimation' % len(p1))
-
-    
-
 
      
     for patched in patchDirArr:
