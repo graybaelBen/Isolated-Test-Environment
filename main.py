@@ -56,8 +56,8 @@ def run(batch="pristine2send"):
     
         #processed = process.cluster_quantize(processed,6)   
         # image is inverted so erode and dilate are swapped from our perspective
-        processed = process.erode(processed,3)
-        processed = process.dilate(processed,10)
+        #processed = process.erode(processed,3)
+        #processed = process.dilate(processed,10)
         #processed, spot_mask = process.spot_mask(processed)
 
         cv2.imwrite(os.path.join(processeddir, img), processed)
