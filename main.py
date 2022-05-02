@@ -37,7 +37,7 @@ def run(batch="pristine2send"):
     imgdir = os.path.join(current_dir,'images')
     maskdir = os.path.join(current_dir,'masks')
     processeddir = os.path.join(current_dir,'processed')
-    patcheddir = os.path.join(current_dir, 'patched')
+    #patcheddir = os.path.join(current_dir, 'patched')
 
 
     if not os.path.exists(os.path.join(current_dir,'spotMask')):
@@ -160,7 +160,7 @@ def run(batch="pristine2send"):
             compared_images = img1+img2
             results = os.path.join(current_dir,"results", compared_images)
             print(results)
-            cv2.imwrite(results,drawnMatches)
+            cv2.imwrite(results, drawnMatches)
 
             #ORB
             #print(img2Index)
