@@ -133,7 +133,7 @@ class HessianAffine:
 
             img = cv2.immread(img_fpath, 0)
             mask = cv2.imread(mask,0)
-            remask = cv2.bitwise_and(img, mask)
+            
             for kp, desc in zip(kpts,vecs):
                 x = round(int(kp[0]))
                 y = round(int(kp[1]))
