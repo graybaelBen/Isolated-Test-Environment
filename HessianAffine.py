@@ -60,7 +60,7 @@ class HessianAffine:
         cv2.imwrite("/mnt/c/Users/dudeb/OneDrive/Documents/GitHub/Isolated-Test-Environment/test.png", img_kp)
         print("done")
 
-    def match(des1, des2, img_fpath1, img_fpath2, kp1, kp2):
+    def match(self, des1, des2, img_fpath1, img_fpath2, kp1, kp2):
         '''
         Take in relative image path, not actual image
         '''
@@ -69,7 +69,7 @@ class HessianAffine:
         kwargs = argparse_hesaff_params()
         print('kwargs = %r' % (kwargs,))
 
-        (kpts, vecs) = pyhesaff.detect_feats(img_fpath1, **kwargs)
+        (kpts, vecs1) = pyhesaff.detect_feats(img_fpath1, **kwargs)
         (kpts2, vecs2) = pyhesaff.detect_feats(img_fpath2, **kwargs)
         imgBGR = cv2.imread(img_fpath1)
 
@@ -87,6 +87,9 @@ class HessianAffine:
         matches = flann.knnMatch(vecs1,vecs2,k=2)
         matchesMask = [[0,0] for _ in range(len(matches))]
 
+        images1 = cv2.imread(img_fpath1, 0)
+        images2 = cv2.imread(img_fpath2, 0)
+
         # ratio test as per Lowe's paper
         matchCount = 0
         for i, pair in enumerate(matches):
@@ -98,11 +101,19 @@ class HessianAffine:
             except ValueError:
                 pass
 
-        drawnMatches = self.drawMatches(image1,image2)
+
+        drawnMatches = self.drawMatches(matchesMask, images1,kp1,images2, kp2, matches)
         
         return matchCount, drawnMatches
         
-    #def drawMatches():
+    def drawMatches(self, matchesMask, image1, kp1, image2, kp2, matches):
+        draw_params = dict(matchColor=-1,
+                           singlePointColor=(255, 0, 0),
+                           matchesMask=matchesMask,
+                           flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+
+        drawnMatches = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
+        return drawnMatches
 
     def kpToEllipse(kp):
         x = round(int(kp[0]))
@@ -132,22 +143,18 @@ class HessianAffine:
         good_desc = [] # list of good descriptors
         print(image.shape)
         
-        rows, cols = image.shape[0], image.shape[1]
+        # rows, cols = image.shape[0], image.shape[1]
         # img = cv2.imread(img_fpath, 0)
         mask = cv2.imread(mask,0)
         print(mask.shape)
-        mask_2 = mask.copy()
-        mask_2[:, 0:cols//2] = 0
+        # mask_2 = mask.copy()
+        # mask_2[:, 0:cols//2] = 0
 
         for kp, desc in zip(kpts,vecs):
             x = round(int(kp[0]))
             y = round(int(kp[1]))
-            if x > 1080:
-                break
-            elif y > 1920:
-                break
-            elif mask_2[int(x),int(y)] !=0:
-                print(mask[x,y])
+            if mask[int(y),int(x)] !=0:
+                print(mask[y,x])
                 good_kp.append(kp)
                 good_desc.append(desc)
 

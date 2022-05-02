@@ -126,9 +126,10 @@ def run(batch="D1.1"):
         #ORB
         #kp, des = descriptor.ORB_descript(gray_img,kp)
         # print(type(maskDirArr[idx]))
-        mask = os.path.join(maskdir, maskDirArr[idx])
+        # mask = os.path.join(maskdir, maskDirArr[idx])
+        
+        # kp, des = HA.reapplyMask(image, mask, kp, des)
         desArray.append(des)
-        kp, des = HA.reapplyMask(image, mask, kp, des)
 
 
     #print('descriptor length :', len(desArray))
