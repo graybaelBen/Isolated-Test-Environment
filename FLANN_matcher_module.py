@@ -38,3 +38,28 @@ class FLANN_matcher:
         drawnMatches = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
 
         return matchCount, drawnMatches
+
+    def ransac(self, kp1, kp2, strong_matches):
+        MIN_MATCH_COUNT = 10
+        if len(strong_matches) > MIN_MATCH_COUNT:
+            src_pts = np.float32([kp1[m.queryIdx].pt for m in strong_matches]).reshape(-1, 1, 2)
+            dst_pts = np.float32([kp2[m.trainIdx].pt for m in strong_matches]).reshape(-1, 1, 2)
+
+            M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+            matchesMask = mask.ravel().tolist()
+
+            # h,w,d = img1.shape
+            # pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
+            # dst = cv2.perspectiveTransform(pts,M)
+            # img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
+
+            best_matches = []
+            for index, maskI in enumerate(matchesMask):
+                if maskI == 1:
+                    best_matches.append(strong_matches[index])
+            return best_matches
+
+        else:
+            print("Not enough matches are found - {}/{}".format(len(strong_matches), MIN_MATCH_COUNT))
+            matchesMask = None
+            return strong_matches
