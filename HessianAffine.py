@@ -127,18 +127,28 @@ class HessianAffine:
         return center, axes, degs
 
         # adapted from https://stackoverflow.com/questions/67622830/how-do-i-mask-opencvs-keypoints-post-detection
-        def reapplyMask(img_fpath, mask, kpts, vecs):
-            good_kp = [] # list of good keypoints
-            good_desc = [] # list of good descriptors
+    def reapplyMask(self, image, mask, kpts, vecs):
+        good_kp = [] # list of good keypoints
+        good_desc = [] # list of good descriptors
+        print(image.shape)
+        
+        rows, cols = image.shape[0], image.shape[1]
+        # img = cv2.imread(img_fpath, 0)
+        mask = cv2.imread(mask,0)
+        print(mask.shape)
+        mask_2 = mask.copy()
+        mask_2[:, 0:cols//2] = 0
 
-            img = cv2.immread(img_fpath, 0)
-            mask = cv2.imread(mask,0)
-            
-            for kp, desc in zip(kpts,vecs):
-                x = round(int(kp[0]))
-                y = round(int(kp[1]))
-                if mask[x,y] !=0:
-                    good_kp.append(kp)
-                    good_desc.append(desc)
+        for kp, desc in zip(kpts,vecs):
+            x = round(int(kp[0]))
+            y = round(int(kp[1]))
+            if x > 1080:
+                break
+            elif y > 1920:
+                break
+            elif mask_2[int(x),int(y)] !=0:
+                print(mask[x,y])
+                good_kp.append(kp)
+                good_desc.append(desc)
 
-            return good_kp, good_desc
+        return good_kp, good_desc

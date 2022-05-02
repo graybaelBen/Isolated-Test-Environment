@@ -26,23 +26,23 @@ detector = HA
 descriptor = HA
 
 #descriptor = RootSIFT_descriptor
-matcher = FLANN_matcher
+matcher = HA
 # instatiate object of class
 process = Processor()
 
-def run(batch="pristine2send"):
+def run(batch="D1.1"):
     # assign active directories
-    current_dir = os.path.join('Batches',batch)
+    current_dir = os.path.join('Demo',batch)
 
     imgdir = os.path.join(current_dir,'images')
     maskdir = os.path.join(current_dir,'masks')
     processeddir = os.path.join(current_dir,'processed')
-    #patcheddir = os.path.join(current_dir, 'patched')
+    # patcheddir = os.path.join(current_dir, 'patched')
 
 
-    if not os.path.exists(os.path.join(current_dir,'spotMask')):
-        os.makedirs(os.path.join(current_dir,'spotMask'))
-    spotMaskdir = os.path.join(current_dir,'spotMask')
+    # if not os.path.exists(os.path.join(current_dir,'spotMask')):
+    #     os.makedirs(os.path.join(current_dir,'spotMask'))
+    # spotMaskdir = os.path.join(current_dir,'spotMask')
 
     imgDirArr = os.listdir(imgdir)
     maskDirArr = os.listdir(maskdir)
@@ -73,7 +73,7 @@ def run(batch="pristine2send"):
 
     # COMMENT OUT FOR NO PROCESSING
     imgDirArr = os.listdir(processeddir)
-    #maskDirArr = os.listdir(spotMaskdir)
+    # maskDirArr = os.listdir(spotMaskdir)
     imgdir = processeddir
 
     #'''
@@ -90,8 +90,8 @@ def run(batch="pristine2send"):
             image = cv2.imread(os.path.join(imgdir, img),0)
             mask = cv2.imread(os.path.join(maskdir, maskDirArr[idx]),0)
 
-        print(os.path.join(imgdir, img))
-        print(os.path.join(maskdir, maskDirArr[idx]))
+        # print(os.path.join(imgdir, img))
+        # print(os.path.join(maskdir, maskDirArr[idx]))
 
     
         kps = detector.detect(image,mask)
@@ -115,7 +115,7 @@ def run(batch="pristine2send"):
     for idx, img in enumerate(imgDirArr):
 
         image = cv2.imread(os.path.join(imgdir, img))
-        print(kpCountArray)
+        # print(kpCountArray)
         kp = kpArray[idx]
         kp, des = descriptor.descript(image, kp)
 
@@ -125,8 +125,11 @@ def run(batch="pristine2send"):
         #RootSIFT end
         #ORB
         #kp, des = descriptor.ORB_descript(gray_img,kp)
-
+        # print(type(maskDirArr[idx]))
+        mask = os.path.join(maskdir, maskDirArr[idx])
         desArray.append(des)
+        kp, des = HA.reapplyMask(image, mask, kp, des)
+
 
     #print('descriptor length :', len(desArray))
 
@@ -154,13 +157,14 @@ def run(batch="pristine2send"):
         # internal loop starts at image in the next index
         for idx2, img2 in enumerate(imgDirArr[idx1+1:]):
     
-            image1 = cv2.imread(os.path.join(imgdir,img1))
-            image2 = cv2.imread(os.path.join(imgdir,img2))
+            image1 = (os.path.join(imgdir,img1))
+            # print(type(image))
+            image2 = (os.path.join(imgdir,img2))
             matchCount, drawnMatches = matcher.match(desArray[idx1], desArray[idx1+idx2+1], image1, image2, kpArray[idx1], kpArray[idx1+idx2+1])
             compared_images = img1+img2
             results = os.path.join(current_dir,"results", compared_images)
             print(results)
-            cv2.imwrite(results, drawnMatches)
+            cv2.imwrite(results,drawnMatches)
 
             #ORB
             #print(img2Index)
