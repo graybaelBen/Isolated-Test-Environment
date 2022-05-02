@@ -24,7 +24,7 @@ class HessianAffine:
 
         cvkp = []
         for i in range(len(self.kpts)):
-            cvkp.append(cv2.KeyPoint(x = self.kpts[i][0], y = self.kpts[i][1], size = 2))
+            cvkp.append(cv2.KeyPoint(x = self.kpts[i][0], y = self.kpts[i][1], size = 6))
 
         return cvkp
      
@@ -142,13 +142,8 @@ class HessianAffine:
         good_kp = [] # list of good keypoints
         good_desc = [] # list of good descriptors
         print(image.shape)
-        
-        # rows, cols = image.shape[0], image.shape[1]
-        # img = cv2.imread(img_fpath, 0)
         mask = cv2.imread(mask,0)
         print(mask.shape)
-        # mask_2 = mask.copy()
-        # mask_2[:, 0:cols//2] = 0
 
         for kp, desc in zip(kpts,vecs):
             x = round(int(kp[0]))
@@ -157,5 +152,5 @@ class HessianAffine:
                 print(mask[y,x])
                 good_kp.append(kp)
                 good_desc.append(desc)
-
+        good_desc = np.asarray(good_desc, np.float32)
         return good_kp, good_desc

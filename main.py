@@ -26,13 +26,13 @@ detector = HA
 descriptor = HA
 
 #descriptor = RootSIFT_descriptor
-matcher = HA
+matcher = FLANN_matcher
 # instatiate object of class
 process = Processor()
 
-def run(batch="D1.1"):
+def run(batch="B1.1"):
     # assign active directories
-    current_dir = os.path.join('Demo',batch)
+    current_dir = os.path.join('Batches',batch)
 
     imgdir = os.path.join(current_dir,'images')
     maskdir = os.path.join(current_dir,'masks')
@@ -47,6 +47,8 @@ def run(batch="D1.1"):
     imgDirArr = os.listdir(imgdir)
     maskDirArr = os.listdir(maskdir)
     #patchedDirArr = os.listdir(patcheddir)
+    imgDirArr.sort()
+    maskDirArr.sort()
 
     # Image Processing
     for idx, img in enumerate(imgDirArr):
@@ -126,9 +128,9 @@ def run(batch="D1.1"):
         #ORB
         #kp, des = descriptor.ORB_descript(gray_img,kp)
         # print(type(maskDirArr[idx]))
-        # mask = os.path.join(maskdir, maskDirArr[idx])
+        mask = os.path.join(maskdir, maskDirArr[idx])
         
-        # kp, des = HA.reapplyMask(image, mask, kp, des)
+        kp, des = HA.reapplyMask(image, mask, kp, des)
         desArray.append(des)
 
 
@@ -158,9 +160,9 @@ def run(batch="D1.1"):
         # internal loop starts at image in the next index
         for idx2, img2 in enumerate(imgDirArr[idx1+1:]):
     
-            image1 = (os.path.join(imgdir,img1))
+            image1 = cv2.imread(os.path.join(imgdir,img1))
             # print(type(image))
-            image2 = (os.path.join(imgdir,img2))
+            image2 = cv2.imread(os.path.join(imgdir,img2))
             matchCount, drawnMatches = matcher.match(desArray[idx1], desArray[idx1+idx2+1], image1, image2, kpArray[idx1], kpArray[idx1+idx2+1])
             compared_images = img1+img2
             results = os.path.join(current_dir,"results", compared_images)
@@ -172,7 +174,7 @@ def run(batch="D1.1"):
             #matchCount += matcher.match(desArray[img1Index], desArray[img2Index] ,image, compare, kpArray[img1Index], kpArray[img2Index])
             
             matchCountArray.append(matchCount)
-            print(idx2)
+            # print(idx2)
     print(batch, " COMPLETE")
     return matchCountArray, kpCountArray
 run()
