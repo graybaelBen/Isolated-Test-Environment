@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 class FLANN_matcher:
     
@@ -14,6 +15,10 @@ class FLANN_matcher:
         search_params = dict(checks=50)   # or pass empty dictionary
         flann = cv2.FlannBasedMatcher(index_params,search_params)
         matches = flann.knnMatch(des1,des2,k=2)
+
+
+        des1 = np.asarray(des1, np.float32)
+        des2 = np.asarray(des2, np.float32)
 
         # Need to draw only good matches, so create a mask
         matchesMask = [[0,0] for _ in range(len(matches))]
@@ -35,7 +40,7 @@ class FLANN_matcher:
                            matchesMask=matchesMask,
                            flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
-        drawnMatches = cv2.drawMatchesKnn(image1,kp1,image2,kp2, matches,None,**draw_params)
+        drawnMatches = cv2.drawMatches(image1,kp1,image2,kp2, matches,None,matchColor=-1)
 
         return matchCount, drawnMatches
 
