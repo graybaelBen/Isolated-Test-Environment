@@ -3,7 +3,7 @@
 import main
 import numpy as np
 
-batches = ["Pristine","B1.1","B1.2","B1.3","B1.4","B1.5","B2.1","B2.2","B2.3","B2.4","B2.5"]
+batches = ["Pristine","B1.2","B1.3","B1.4","B1.5","B2.1","B2.2","B2.3","B2.4","B2.5"]
 
 resultMatrix = []
 longest = 0

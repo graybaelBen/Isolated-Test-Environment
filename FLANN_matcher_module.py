@@ -14,6 +14,9 @@ class FLANN_matcher:
         index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
         search_params = dict(checks=50)   # or pass empty dictionary
         flann = cv2.FlannBasedMatcher(index_params,search_params)
+
+        des1 = np.asarray(des1, np.float32)
+        des2 = np.asarray(des2, np.float32)
         matches = flann.knnMatch(des1,des2,k=2)
 
 
@@ -35,12 +38,17 @@ class FLANN_matcher:
                 pass
 
         #drawing keypoint matches
+        if len(matches)!=0:
+            print(">0", len(matches))
+        elif len(matches) ==0:
+            print("0", matches)
+
         draw_params = dict(matchColor=-1,
                            singlePointColor=(255, 0, 0),
                            matchesMask=matchesMask,
                            flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
-        drawnMatches = cv2.drawMatches(image1,kp1,image2,kp2, matches,None,matchColor=-1)
+        drawnMatches = cv2.drawMatchesKnn(image1, kp1, image2, kp2, matches, None, **draw_params)
 
         return matchCount, drawnMatches
 

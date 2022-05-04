@@ -30,7 +30,7 @@ matcher = FLANN_matcher
 # instatiate object of class
 process = Processor()
 
-def run(batch="B1.1"):
+def run(batch="B2.2"):
     # assign active directories
     current_dir = os.path.join('Batches',batch)
 
