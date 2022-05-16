@@ -6,10 +6,11 @@ import os
 from FLANN_matcher_module import FLANN_matcher # ins: kp, des; outs:
 from preprocessor  import Processor
 from HessianAffine import HessianAffine
+from BF_matcher import BF_matcher
 HA = HessianAffine()
 
 #descriptor = RootSIFT_descriptor
-matcher = FLANN_matcher
+matcher = BF_matcher
 # instatiate object of class
 process = Processor()
 
@@ -36,9 +37,9 @@ def run(batch):
         processed = process.mask(processed, mask)
         
         #processed = process.threshold(processed)
-        #processed = process.cluster_quantize(processed,6)   
+       # processed = process.cluster_quantize(processed,6)   
         # image is inverted so erode and dilate are swapped from our perspective
-        #processed = process.erode(processed,3)
+       #processed = process.erode(processed,3)
         #processed = process.dilate(processed,10)
 
         if not os.path.exists(os.path.join(current_dir,'processed')):
@@ -47,7 +48,8 @@ def run(batch):
 
 
     # COMMENT OUT FOR NO PROCESSING
-    imgDirArr = os.listdir(processeddir)
+    #imgDirArr = os.listdir(processeddir)
+    #imgdir = os.path.join(current_dir,'processed')
 
     # Keypoint Detection Description
     kpArray = []
@@ -91,3 +93,4 @@ def run(batch):
             # print(idx2)
     print(batch, " COMPLETE")
     return matchCountArray, kpCountArray
+#run("Batch1.1")
