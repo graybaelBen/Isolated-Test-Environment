@@ -22,15 +22,15 @@ from HessianAffine import HessianAffine
 HA = HessianAffine()
 
 # assign modules
-detector = HA
-descriptor = HA
+detector = SIFT_detector
+descriptor = SIFT_descriptor
 
 #descriptor = RootSIFT_descriptor
 matcher = FLANN_matcher
 # instatiate object of class
 process = Processor()
 
-def run(batch="pristine2send"):
+def run(batch):
     # assign active directories
     current_dir = os.path.join('Batches',batch)
 
@@ -85,7 +85,7 @@ def run(batch="pristine2send"):
     kpCountArray = []
     for idx, img in enumerate(imgDirArr):
         #if using HA, feed path instead of image
-        if(detector or descriptor == HA):
+        if(detector == HA or descriptor == HA):
             image = os.path.join(imgdir, img)
             mask = os.path.join(maskdir, maskDirArr[idx])
         else:
@@ -130,7 +130,7 @@ def run(batch="pristine2send"):
         # print(type(maskDirArr[idx]))
         mask = os.path.join(maskdir, maskDirArr[idx])
         
-        kp, des = HA.reapplyMask(image, mask, kp, des)
+        #kp, des = HA.reapplyMask(image, mask, kp, des)
         desArray.append(des)
 
 
@@ -177,4 +177,4 @@ def run(batch="pristine2send"):
             # print(idx2)
     print(batch, " COMPLETE")
     return matchCountArray, kpCountArray
-run()
+#run()
