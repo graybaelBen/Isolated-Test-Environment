@@ -1,6 +1,6 @@
 # Isolated Testing Environment
 
-The Isolated Testing Environent was developed to quantitativly test computer visision algorithm combonations through a modular, stripped down (isolated), and automated approach. The results generated are based on sound statistical performance metrics but careful thought go into building a balanced and comprehensive test data set.
+The Isolated Testing Environent was developed to quantitativly test combinations of computer vision algorithms through a modular, stripped down (isolated), and automated approach. The results generated are based on sound statistical performance metrics and careful thought went into building a balanced and comprehensive test data set.
 
 ## Installation
 
@@ -15,15 +15,15 @@ pip install <other dependencies>
 ## Usage
 
 After populating at least one folder with test images, the program can be run in one of two ways. The first is through single batch testing.
-In main, specify which batch to run within the run funciton such as:
+In main, specify which batch to run within the run function such as:
 
 ```python
 def run(batch="Batch2.1"):
     
 python ./main.py 
 ```
-The second approach relies on the test.py script which runs through each batch specified, collects results, and outputs the data into results.csv for further analysis.
-An accompanying spreadsheet includes the statistical logic to calculate accuracy, specificity, etc..
+The second approach relies on the test.py script which runs through each specified batch, collects results, and outputs the data into results.csv for further analysis.
+An accompanying spreadsheet template includes the statistical logic to calculate accuracy, specificity, etc..
 
 ```python
 batches = ["Batch1.1","Batch2.1",]
